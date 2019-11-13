@@ -1,4 +1,4 @@
-module (
+module mm_wb (
     input   wire    rst,
     input   wire    clk,
 

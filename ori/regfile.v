@@ -12,7 +12,7 @@ module regfile(
 
     input   wire[4:0]   ra2,
     input   wire        re2,
-    output  reg[31:0]   rn2,
+    output  reg[31:0]   rn2
 );
 
     reg[31:0]   r[32];
@@ -32,6 +32,7 @@ module regfile(
             end
         end else begin
             rn1 <= 32'h00000000;
+        end
     end
 
     always @ (posedge clk) begin
@@ -43,6 +44,7 @@ module regfile(
             end
         end else begin
             rn2 <= 32'h00000000;
+        end
     end
 
 endmodule
