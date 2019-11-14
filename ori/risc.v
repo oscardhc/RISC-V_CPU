@@ -5,6 +5,8 @@
 `include "id_ex.v"
 `include "ex.v"
 `include "ex_mm.v"
+`include "mm.v"
+`include "mm_wb.v"
 `include "regfile.v"
 
 module risc (
@@ -114,14 +116,28 @@ module risc (
         .t(ex_t), .st(ex_st), .sst(ex_sst),
         .n1(ex_n1), .n2(ex_n2), .wa(ex_wa), .we(ex_we),
 
-        .wa_o(ex_wa_o), .we(ex_we_o), .wn(ex_wn_o)
+        .wa_o(ex_wa_o), .we_o(ex_we_o), .wn_o(ex_wn_o)
     );
 
     ex_mm ex_mm0 (
         .clk(clk),  .rst(rst),
 
-        .ex_wa(ex_wa_o), .ex_we(ex_we_o), .wn(ex_wn_o),
-        .ex_we(ex_we)
+        .ex_wa(ex_wa_o), .ex_we(ex_we_o), .ex_wn(ex_wn_o),
+        .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn)
+    );
+
+    mm mm0 (
+        .clk(clk),  .rst(rst),
+
+        .wn(mm_wn), .wa(mm_wa), .we(mm_we),
+        .wn_o(mm_wn_o), .wa_o(mm_wa_o), .we_o(mm_we_o)
+    );
+
+    mm_wb mm_wb0 (
+        .clk(clk), .rst(rst),
+
+        .mm_wn(mm_wn_o), .mm_wa(mm_wa_o), .mm_we(mm_we_o),
+        .wb_wn(wb_wn), .wb_wa(wb_wa), .wb_we(wb_we)
     );
     
 

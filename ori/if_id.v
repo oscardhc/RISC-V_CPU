@@ -8,7 +8,7 @@ module if_id(
 );
 
     always @ (posedge clk) begin
-        if (rst == 0'b1) begin
+        if (rst == 1'b1) begin
             id_pc <= 32'h00000000;
             id_is <= 32'h00000000;
         end else begin

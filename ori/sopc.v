@@ -1,3 +1,6 @@
+
+`include "risc.v"
+
 module sopc (
     input   wire    clk,
     input   wire    rst
