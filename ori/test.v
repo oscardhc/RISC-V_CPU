@@ -1,7 +1,5 @@
 `timescale 1ns/1ps
 
-`include "sopc.v"
-
 module test();
 
     reg clk;

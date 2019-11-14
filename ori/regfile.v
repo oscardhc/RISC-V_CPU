@@ -15,7 +15,7 @@ module regfile(
     output  reg[31:0]   rn2
 );
 
-    reg[31:0]   r[32];
+    reg[31:0]   r[31:0];
 
     always @ (posedge clk) begin
         if (rst == 1'b0 && we == 1'b1 && wa != 5'b00000) begin
