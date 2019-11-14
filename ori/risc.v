@@ -1,13 +1,13 @@
 
-`include "pc.v"
-`include "if_id.v"
-`include "id.v"
-`include "id_ex.v"
-`include "ex.v"
-`include "ex_mm.v"
-`include "mm.v"
-`include "mm_wb.v"
-`include "regfile.v"
+// `include "pc.v"
+// `include "if_id.v"
+// `include "id.v"
+// `include "id_ex.v"
+// `include "ex.v"
+// `include "ex_mm.v"
+// `include "mm.v"
+// `include "mm_wb.v"
+// `include "regfile.v"
 
 module risc (
     input   wire    rst,
