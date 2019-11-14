@@ -1,3 +1,12 @@
+
+`include "pc.v"
+`include "if_id.v"
+`include "id.v"
+`include "id_ex.v"
+`include "ex.v"
+`include "ex_mm.v"
+`include "regfile.v"
+
 module risc (
     input   wire    rst,
     input   wire    clk,
@@ -87,6 +96,32 @@ module risc (
 
         .re1(re1), .ra1(ra1), .rn1(rn1),
         .re2(re2), .ra2(ra2), .rn2(rn2)
+    );
+
+    id_ex id_ex0 (
+        .clk(clk),  .rst(rst),
+        
+        .id_t(id_t), .id_st(id_st), .id_sst(id_sst),
+        .id_n1(id_n1), .id_n2(id_n1), .id_wa(id_wa), .id_we(id_we),
+
+        .ex_t(ex_t), .ex_st(ex_st), .ex_sst(ex_sst),
+        .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we)
+    );
+
+    ex ex0 (
+        .clk(clk),  .rst(rst),
+
+        .t(ex_t), .st(ex_st), .sst(ex_sst),
+        .n1(ex_n1), .n2(ex_n2), .wa(ex_wa), .we(ex_we),
+
+        .wa_o(ex_wa_o), .we(ex_we_o), .wn(ex_wn_o)
+    );
+
+    ex_mm ex_mm0 (
+        .clk(clk),  .rst(rst),
+
+        .ex_wa(ex_wa_o), .ex_we(ex_we_o), .wn(ex_wn_o),
+        .ex_we(ex_we)
     );
     
 
