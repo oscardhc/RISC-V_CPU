@@ -6,7 +6,7 @@ module sopc (
     input   wire    rst
 );
 
-    wire[31:0]  ad;
+    wire[31:0]  ad
     wire[31:0]  is;
     wire        ce;
 

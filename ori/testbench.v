@@ -1,6 +1,8 @@
 // testbench top module file
 // for simulation only
 
+// `include "riscv_top.v"
+
 `timescale 1ns/1ps
 module testbench;
 
@@ -18,10 +20,11 @@ riscv_top #(.SIM(1)) top(
 initial begin
   clk=0;
   rst=1;
-  repeat(50) #1 clk=!clk;
+  repeat(4) #1 clk=!clk;
   rst=0; 
-  forever #1 clk=!clk;
-
+  repeat(40) #1 begin
+    clk=!clk;
+  end
   $finish;
 end
 

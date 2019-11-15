@@ -1,5 +1,7 @@
 // implements 128KB of on-board RAM
 
+// `include "block_ram.v"
+
 module ram
 #(
   parameter ADDR_WIDTH = 17

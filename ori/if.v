@@ -1,69 +1,54 @@
-
-module rom(
-    input   wire    ce,
-    input   wire[5:0]   addr,
-
-    output  reg[31:0]   inst
-);
-
-    reg[31:0] rom[63:0];
-
-    initial begin
-        $readmemh("rom.data", rom);
-        $display("LOADED!! %d %d %d", rom[0], rom[1], rom[2]);
-    end
-
-    always @ (*) begin
-        if (ce == 1'b0) begin
-            inst <= 32'h0;
-        end else begin
-            inst <= rom[addr];
-        end
-        $display("TIME: %3d, CE: %d, ADDR: %5d, INST: %d", $time, ce, addr, inst);
-    end
-
-endmodule
-
-module insf(
+module inf (
     input   wire    clk,
     input   wire    rst,
-    output  wire[31:0]  inst_o
+    input 	wire[7:0]	in,
+    output  reg         wr,
+    output  reg[31:0]   pc,
+    output  reg         ce,
+    output  reg[31:0]   is,
+    output  reg[2:0]    cu
 );
 
-    wire[5:0] pc;
-    wire rom_ce;
-
-    pc pc0(.clk(clk), .rst(rst), .pc(pc), .ce(rom_ce));
-    rom rom0(.ce(rom_ce), .addr(pc), .inst(inst_o));
-
-endmodule
-
-module insf_test;
-
-    reg clk;
-    reg rst;
-    wire[31:0] inst;
-
-    initial begin
-        $dumpfile("test.vcd");
-        $dumpvars;
-        clk = 1'b0;
-        forever #10 begin
-            clk = ~clk;
-            $display("tik %4d %d", $time, clk);
+    always @ (posedge clk) begin
+        if (rst == 1'b1) begin
+            ce <= 1'b0;
+        end else begin
+            ce <= 1'b1;
         end
     end
 
-    initial begin
-        rst = 1'b1;
-        #70 rst = 1'b0;
-        #200 rst = 1'b1;
-        #20 rst = 1'b0;
-        #200 $finish;
+    always @ (posedge clk) begin
+        if (ce == 1'b0) begin
+            pc <= 32'h00000000;
+            cu <= 2'h0;
+            is <= 32'h0;
+            wr <= 1'b0;
+        end else begin
+            wr <= 1'b0;
+        end
     end
 
-    insf insf0(.clk(clk), .rst(rst), .inst_o(inst));
-
+    always @ (negedge clk) begin
+        if (ce == 1'b1) begin
+            pc <= pc + 4'h1;
+            wr <= 1'b0;
+            // $display("cu %d in %h is %h", cu, in, is);
+        	if (cu == 0) begin
+	            is[31:24] <= in;
+	            cu <= 1;
+        	end else if (cu == 1) begin
+	            is[23:16] <= in;
+	            cu <= 2;
+        	end else if (cu == 2) begin
+	            is[15: 8] <= in;
+	            cu <= 3;
+        	end else if (cu == 3) begin
+	            is[ 7: 0] <= in;
+	            cu <= 0;
+        	end
+        end
+    end
+    
 endmodule
 
 

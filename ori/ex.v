@@ -17,14 +17,17 @@ module ex (
     reg[31:0]   res;
 
     always @ (*) begin
-        if (rst == 1'b1) begin
+        if (rst == 1'b1 || t == 6'h0) begin
+            res <= 32'h0;
         end else begin
+            $display("%h t %h st %h sst %h", 7'b0010011, t, st, sst);
             case (t)
                 7'b0010011: begin
                     case (st)
-                        // OR
+                        // ORI
                         3'b110: begin
                             res <= n1 | n2;
+                            $display("--------------- ORI!! %d %d %d", n1, n2, res);
                         end
                     endcase
                 end
@@ -36,10 +39,12 @@ module ex (
     end
 
     always @ (*) begin
+        $display("?????????? %d", res);
         wa_o <= wa;
         we_o <= we;
         case (t)
             7'b0010011: begin
+                $display("> write %d", res);
                 wn_o <= res;
             end
             default: begin

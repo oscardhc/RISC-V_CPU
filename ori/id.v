@@ -24,7 +24,19 @@ module id(
     reg         vld;
 
     always @ (*) begin
-        if (rst == 1'b1) begin
+        if (rst == 1'b1 || is == 32'h0) begin
+
+            re1 <= 1'b0;
+            re2 <= 1'b0;
+            ra1 <= 5'h0;
+            ra2 <= 5'h0;
+            t   <= 6'h0;
+            st  <= 3'h0;
+            sst <= 1'h0;
+            out1    <= 32'h0;
+            out2    <= 32'h0;
+            wa  <= 5'h0;
+            we  <= 1'h0;
 
         end else begin
 
