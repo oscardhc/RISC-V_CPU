@@ -1,4 +1,5 @@
 
+// `include "mct.v"
 // `include "if.v"
 // `include "if_id.v"
 // `include "id.v"
@@ -18,9 +19,12 @@ module risc (
     output  wire        rom_wr
 );
 
+    wire[31:0]  mct_rn;
+    wire[31:0]  mct_wn;
+    wire        mct_wr;
+
     wire[31:0]  if_pc;
     wire[31:0]  if_is;
-    wire[2:0]   if_cu;
 
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
@@ -67,23 +71,30 @@ module risc (
     wire[4:0]   ra2;
     wire        re2;
 
-    inf if0 (
+    assign rom_a = if_pc;
+
+    mct mct0 (
         .clk(clk), .rst(rst),
-        .in(rom_rn),
-        .wr(rom_wr),
-        .pc(if_pc),
-        .ce(rom_ce),
-        .is(if_is),
-        .cu(if_cu)
+        .wr(mct_wr), .wn_i(mct_wn),
+        .in(rom_rn), .out(rom_wn), 
+        .ok(mct_ok),
+        .rn_o(mct_rn),
+        .ad_o(rom_a),
+        .wr_o(rom_wr)
     );
 
-    assign rom_a = if_pc;
+    inf if0 (
+        .clk(clk), .rst(rst),
+        .dt(mct_rn),
+        .ok(mct_ok),
+        .pc(if_pc),
+        .is(if_is)
+    );
 
     if_id if_id0 (
         .clk(clk), .rst(rst),
         .if_pc(if_pc),
         .if_is(if_is),
-        .if_cu(if_cu),
         .id_pc(id_pc),
         .id_is(id_is)
     );
