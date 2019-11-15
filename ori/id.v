@@ -25,7 +25,6 @@ module id(
 
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
-
             re1 <= 1'b0;
             re2 <= 1'b0;
             ra1 <= 5'h0;
@@ -37,7 +36,6 @@ module id(
             out2    <= 32'h0;
             wa  <= 5'h0;
             we  <= 1'h0;
-
         end else begin
 
             t <= is[6:0];
@@ -51,7 +49,7 @@ module id(
 
             case (t)
                 7'b0010011: begin
-                    imm[11:0] <= is[31:25];
+                    imm[11:0] <= is[31:20];
                     wa <= is[11:7];
                     case (st)
                         // OR

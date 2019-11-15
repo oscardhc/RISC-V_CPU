@@ -113,7 +113,7 @@ module risc (
         .clk(clk),  .rst(rst),
         
         .id_t(id_t), .id_st(id_st), .id_sst(id_sst),
-        .id_n1(id_n1), .id_n2(id_n1), .id_wa(id_wa), .id_we(id_we),
+        .id_n1(id_n1), .id_n2(id_n2), .id_wa(id_wa), .id_we(id_we),
 
         .ex_t(ex_t), .ex_st(ex_st), .ex_sst(ex_sst),
         .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we)

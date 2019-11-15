@@ -16,6 +16,12 @@ module regfile(
 );
 
     reg[31:0]   r[31:0];
+    
+    always @ (posedge clk) begin
+        if (rst == 1'b1) begin
+            r[0] = 32'h0;
+        end
+    end
 
     always @ (posedge clk) begin
         if (rst == 1'b0 && we == 1'b1 && wa != 5'b00000) begin
