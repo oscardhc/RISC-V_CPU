@@ -1,12 +1,12 @@
 
-`include "risc.v"
+// `include "risc.v"
 
 module sopc (
     input   wire    clk,
     input   wire    rst
 );
 
-    wire[31:0]  ad;
+    wire[31:0]  ad
     wire[31:0]  is;
     wire        ce;
 

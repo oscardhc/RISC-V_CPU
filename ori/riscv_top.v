@@ -1,6 +1,10 @@
 // riscv top module file
 // modification allowed for debugging purposes
 
+// `include "risc.v"
+// `include "ram.v"
+// `include "hci.v"
+
 module riscv_top
 #(
 	parameter SIM = 0						// whether in simulation
@@ -77,18 +81,26 @@ wire		cpu_rdy;
 wire [31:0] cpu_dbgreg_dout;
 
 // fakecpu cpu0(
-cpu cpu0(
-	.clk_in(clk),
-	.rst_in(rst),
-	.rdy_in(cpu_rdy),
+// cpu cpu0(
+// 	.clk_in(clk),
+// 	.rst_in(rst),
+// 	.rdy_in(cpu_rdy),
 
-	.mem_din(cpu_ram_din),
-	.mem_dout(cpu_ram_dout),
-	.mem_a(cpu_ram_a),
-	.mem_wr(cpu_ram_wr),
+// 	.mem_din(cpu_ram_din),
+// 	.mem_dout(cpu_ram_dout),
+// 	.mem_a(cpu_ram_a),
+// 	.mem_wr(cpu_ram_wr),
 
-	.dbgreg_dout(cpu_dbgreg_dout)	// demo
+// 	.dbgreg_dout(cpu_dbgreg_dout)	// demo
+// );
+
+risc risc0 (
+	.clk(clk), .rst(rst),
+
+	.rom_rn(cpu_ram_din), .rom_wn(cpu_ram_dout),
+	.rom_a(cpu_ram_a), .rom_wr(cpu_ram_wr)
 );
+
 
 //
 // HCI: host communication interface block. Use controller to interact.

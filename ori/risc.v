@@ -1,5 +1,5 @@
 
-// `include "pc.v"
+// `include "if.v"
 // `include "if_id.v"
 // `include "id.v"
 // `include "id_ex.v"
@@ -12,12 +12,16 @@
 module risc (
     input   wire    rst,
     input   wire    clk,
-    input   wire[31:0]  rom_data,
-    output  wire[31:0]  rom_addr,
-    output  wire        rom_ce
+    input   wire[7:0]   rom_rn,
+    output  wire[7:0]   rom_wn,
+    output  wire[31:0]  rom_a,
+    output  wire        rom_wr
 );
 
-    wire[31:0]  pc;
+    wire[31:0]  if_pc;
+    wire[31:0]  if_is;
+    wire[2:0]   if_cu;
+
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
 
@@ -63,18 +67,23 @@ module risc (
     wire[4:0]   ra2;
     wire        re2;
 
-    pc pc0 (
+    inf if0 (
         .clk(clk), .rst(rst),
-        .pc(pc),
-        .ce(rom_ce)
+        .in(rom_rn),
+        .wr(rom_wr),
+        .pc(if_pc),
+        .ce(rom_ce),
+        .is(if_is),
+        .cu(if_cu)
     );
 
-    assign rom_addr = pc;
+    assign rom_a = if_pc;
 
     if_id if_id0 (
         .clk(clk), .rst(rst),
-        .if_pc(pc),
-        .if_is(rom_data),
+        .if_pc(if_pc),
+        .if_is(if_is),
+        .if_cu(if_cu),
         .id_pc(id_pc),
         .id_is(id_is)
     );

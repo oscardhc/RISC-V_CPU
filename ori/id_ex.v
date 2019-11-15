@@ -31,6 +31,7 @@ module id_ex (
             ex_wa   <= 5'h0;
             ex_we   <= 1'h0;
         end else begin
+            $display("- id %d %d", id_n1, id_n2);
             ex_t    <= id_t;
             ex_st   <= id_st;
             ex_sst  <= id_sst;
