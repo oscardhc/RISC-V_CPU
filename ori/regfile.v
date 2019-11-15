@@ -18,9 +18,7 @@ module regfile(
     reg[31:0]   r[31:0];
     
     always @ (posedge clk) begin
-        if (rst == 1'b1) begin
-            r[0] = 32'h0;
-        end
+        r[0] = 32'h0;
     end
 
     always @ (posedge clk) begin
@@ -29,27 +27,27 @@ module regfile(
         end
     end
 
-    always @ (posedge clk) begin
+    always @ (*) begin
         if (rst == 1'b0 && re1 == 1'b1) begin
             if (ra1 == wa) begin
-                rn1 <= wn;
+                rn1 = wn;
             end else begin
-                rn1 <= r[ra1];
+                rn1 = r[ra1];
             end
         end else begin
-            rn1 <= 32'h00000000;
+            rn1 = 32'h00000000;
         end
     end
 
-    always @ (posedge clk) begin
+    always @ (*) begin
         if (rst == 1'b0 && re2 == 1'b1) begin
             if (ra2 == wa) begin
-                rn2 <= wn;
+                rn2 = wn;
             end else begin
-                rn2 <= r[ra2];
+                rn2 = r[ra2];
             end
         end else begin
-            rn2 <= 32'h00000000;
+            rn2 = 32'h00000000;
         end
     end
 

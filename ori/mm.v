@@ -13,13 +13,13 @@ module mm (
 
     always @ (*) begin
         if (rst == 1'b1) begin
-            we_o <= 1'b0;
-            wa_o <= 5'h0;
-            wn_o <= 32'h0;
+            we_o = 1'b0;
+            wa_o = 5'h0;
+            wn_o = 32'h0;
         end else begin
-            we_o <= we;
-            wa_o <= wa;
-            wn_o <= wn;
+            we_o = we;
+            wa_o = wa;
+            wn_o = wn;
         end
     end
 
