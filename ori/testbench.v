@@ -20,9 +20,9 @@ riscv_top #(.SIM(1)) top(
 initial begin
   clk=0;
   rst=1;
-  repeat(4) #1 clk=!clk;
+  repeat(1) #1 clk=!clk;
   rst=0; 
-  repeat(40) #1 begin
+  repeat(60) #1 begin
     clk=!clk;
   end
   $finish;

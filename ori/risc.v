@@ -22,6 +22,7 @@ module risc (
     wire[31:0]  mct_rn;
     wire[31:0]  mct_wn;
     wire        mct_wr;
+    wire        mct_ok;
 
     wire[31:0]  if_pc;
     wire[31:0]  if_is;
@@ -70,8 +71,6 @@ module risc (
     wire[31:0]  rn2;
     wire[4:0]   ra2;
     wire        re2;
-
-    assign rom_a = if_pc;
 
     mct mct0 (
         .clk(clk), .rst(rst),

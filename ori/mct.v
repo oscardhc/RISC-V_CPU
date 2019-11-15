@@ -18,10 +18,8 @@ module mct (
 			cu <= 2'h0;
 			rn_o <= 32'h0;
 			wr_o <= 1'b0;
-			ok <= 1'h0;
-		end else begin
-			wr_o <= 1'b0;
 			ad_o <= 32'h0;
+			ok <= 1'h0;
 		end
 	end
 

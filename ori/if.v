@@ -9,7 +9,7 @@ module inf (
 
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
-            pc <= 32'h00000000;
+            pc <= 32'h0;
             is <= 32'h0;
         end
     end
