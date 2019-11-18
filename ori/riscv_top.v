@@ -1,9 +1,9 @@
 // riscv top module file
 // modification allowed for debugging purposes
 
-// `include "risc.v"
-// `include "ram.v"
-// `include "hci.v"
+`include "risc.v"
+`include "ram.v"
+`include "hci.v"
 
 module riscv_top
 #(

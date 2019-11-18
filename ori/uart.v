@@ -25,9 +25,9 @@
 *  (serial) port.
 ***************************************************************************************************/
 
-// `include "uart_rx.v"
-// `include "uart_tx.v"
-// `include "uart_baud_clk.v"
+`include "uart_rx.v"
+`include "uart_tx.v"
+`include "uart_baud_clk.v"
 
 module uart
 #(

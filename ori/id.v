@@ -17,7 +17,15 @@ module id(
     output  reg[31:0]   out1,
     output  reg[31:0]   out2,
     output  reg[4:0]    wa,
-    output  reg         we
+    output  reg         we,
+
+    input   wire[4:0]   ex_wa,
+    input   wire[31:0]  ex_wn,
+    input   wire        ex_we,
+
+    input   wire[4:0]   mm_wa,
+    input   wire[31:0]  mm_wn,
+    input   wire        mm_we
 );
 
     reg[31:0]   imm;
@@ -73,9 +81,12 @@ module id(
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
             out1 = 32'h0;
+        end else if (re1 == 1'b1 && ex_wa == ra1 && ex_wa == 1'b1) begin
+            out1 = ex_wn;
+        end else if (re1 == 1'b1 && mm_wa == ra1 && mm_we == 1'b1) begin
+            out1 = mm_wn;
         end else if (re1 == 1'b1) begin
             out1 = rn1;
-            $display("out now %d", out1);
         end else if (re1 == 1'b0) begin
             out1 = imm;
         end else begin
@@ -86,6 +97,10 @@ module id(
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
             out2 = 32'h0;
+        end else if (re2 == 1'b1 && ex_wa == ra2 && ex_we == 1'b1) begin
+            out2 = ex_wn;
+        end else if (re2 == 1'b1 && mm_wa == ra2 && mm_we == 1'b1) begin
+            out2 = mm_wn;
         end else if (re2 == 1'b1) begin
             out2 = rn1;
         end else if (re2 == 1'b0) begin

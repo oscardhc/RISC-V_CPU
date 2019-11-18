@@ -75,6 +75,7 @@ module risc (
     mct mct0 (
         .clk(clk), .rst(rst),
         .wr(mct_wr), .wn_i(mct_wn),
+        .ra_i(if_pc),
         .in(rom_rn), .out(rom_wn), 
         .ok(mct_ok),
         .rn_o(mct_rn),
@@ -108,7 +109,10 @@ module risc (
 
         .t(id_t), .st(id_st), .sst(id_sst),
         .out1(id_n1), .out2(id_n2),
-        .wa(id_wa), .we(id_we)
+        .wa(id_wa), .we(id_we),
+
+        .ex_wa(ex_wa_o), .ex_wn(ex_wn_o), .ex_we(ex_we_o),
+        .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o)
     );
 
     regfile regfile0 (

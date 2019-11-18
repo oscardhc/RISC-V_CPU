@@ -1,4 +1,4 @@
 ORI x1, x0, 123
-ORI x2, x0, 233
 ORI x4, x1, 999
+ORI x2, x0, 233
 ORI x3, x0, 456

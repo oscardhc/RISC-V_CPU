@@ -6,6 +6,13 @@ def pb(x, b):
         x //= 2
     return s[::-1]
 
+def toi(a):
+    x = 0;
+    print('>', a);
+    for i in range(32):
+        x = x * 2 + int(a[i])
+    return x
+
 with open('test.code', 'r') as fin:
     with open('test.data', 'w') as f:
         for l in fin:
@@ -56,6 +63,6 @@ with open('test.code', 'r') as fin:
                 o += pb(0b111, 3)
                 o += pb(int(a[1][1:]), 5)
                 o += pb(0b0010011, 7)
-            print(len(o), o)
+            print(len(o), o, hex(toi(o)))
             for i in range(4):
                 print(o[i*8:i*8+8], file=f)
