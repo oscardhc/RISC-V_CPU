@@ -71,7 +71,7 @@ module id(
     end
 
     always @ (*) begin
-        if (rst == 1'b1) begin
+        if (rst == 1'b1 || is == 32'h0) begin
             out1 = 32'h0;
         end else if (re1 == 1'b1) begin
             out1 = rn1;
@@ -84,7 +84,7 @@ module id(
     end
 
     always @ (*) begin
-        if (rst == 1'b1) begin
+        if (rst == 1'b1 || is == 32'h0) begin
             out2 = 32'h0;
         end else if (re2 == 1'b1) begin
             out2 = rn1;

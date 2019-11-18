@@ -22,7 +22,7 @@ initial begin
   rst=1;
   repeat(1) #1 clk=!clk;
   rst=0; 
-  repeat(50) #1 begin
+  repeat(25) #1 begin
     clk=!clk;
   end
   $finish;

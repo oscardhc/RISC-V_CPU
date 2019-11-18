@@ -22,7 +22,7 @@ module id_ex (
 );
 
     always @ (posedge clk) begin
-        if (rst == 1'b1) begin
+        if (rst == 1'b1 || id_t == 7'h0) begin
             ex_t    <= 7'h0;
             ex_st   <= 3'h0;
             ex_sst  <= 1'h0;
@@ -31,7 +31,7 @@ module id_ex (
             ex_wa   <= 5'h0;
             ex_we   <= 1'h0;
         end else begin
-            $display("- id %d %d", id_n1, id_n2);
+            $display("[%d] - id %d %d", $time, id_n1, id_n2);
             ex_t    <= id_t;
             ex_st   <= id_st;
             ex_sst  <= id_sst;
