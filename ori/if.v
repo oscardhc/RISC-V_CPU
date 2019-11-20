@@ -4,7 +4,10 @@ module inf (
     input   wire    ok,
     input   wire[31:0]  dt,
     output  reg[31:0]   pc,
-    output  reg[31:0]   is
+    output  reg[31:0]   is,
+
+    input   wire[31:0]  id_if_pc,
+    input   wire        id_if_pce
 );
 
     always @ (*) begin
@@ -16,16 +19,13 @@ module inf (
 
     always @ (*) begin
         if (rst == 1'b0) begin
-            /*
-            if (pc_o == 0)       is <= 32'b00000111101100000110000010010011;
-            else if (pc == 8)  is <= 32'b00111110011100001110001000010011;
-            else if (pc == 4)  is <= 32'b00001110100100000110000100010011;
-            else if (pc == 12)  is <= 32'b00011100100000000110000110010011;
-            else is <= 32'h0;
-            pc <= pc + 4;
-            */
             if (ok == 1'b1) begin
-                pc = pc + 4;
+                $display("======== PC %h %h", pc, id_if_pc);
+                if (id_if_pce == 1'b1) begin
+                    pc = id_if_pc;
+                end else begin
+                    pc = pc + 4;
+                end
                 is = dt;
             end else begin
                 is = 32'h0;

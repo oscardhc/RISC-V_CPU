@@ -1,14 +1,14 @@
 
-`include "mct.v"
-`include "if.v"
-`include "if_id.v"
-`include "id.v"
-`include "id_ex.v"
-`include "ex.v"
-`include "ex_mm.v"
-`include "mm.v"
-`include "mm_wb.v"
-`include "regfile.v"
+// `include "mct.v"
+// `include "if.v"
+// `include "if_id.v"
+// `include "id.v"
+// `include "id_ex.v"
+// `include "ex.v"
+// `include "ex_mm.v"
+// `include "mm.v"
+// `include "mm_wb.v"
+// `include "regfile.v"
 
 module risc (
     input   wire    rst,
@@ -19,16 +19,29 @@ module risc (
     output  wire        rom_wr
 );
 
-    wire[31:0]  mct_rn;
-    wire[31:0]  mct_wn;
-    wire        mct_wr;
-    wire        mct_ok;
+    wire        stl;
+
+    wire[31:0]  if_mct_rn;
+    wire        if_ok;
+
+    wire        mm_e;
+    wire[31:0]  mm_a;
+    wire[31:0]  mm_n_i;
+    wire[31:0]  mm_n_o;
+    wire        mm_wr;
+    wire        mm_ok;
 
     wire[31:0]  if_pc;
     wire[31:0]  if_is;
 
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
+
+    wire[31:0]  id_id_if_pc;
+    wire        id_id_if_pce;
+    wire[31:0]  id_id_if_off;
+    wire[31:0]  if_id_if_pc;
+    wire        if_id_if_pce;
 
     wire[6:0]   id_t;
     wire[2:0]   id_st;
@@ -54,6 +67,9 @@ module risc (
     wire        mm_we;
     wire[31:0]  mm_wn;
 
+    wire[3:0]   ex_mem_e;
+    wire[3:0]   mm_mem_e;
+
     wire[4:0]   mm_wa_o;
     wire        mm_we_o;
     wire[31:0]  mm_wn_o;
@@ -74,21 +90,29 @@ module risc (
 
     mct mct0 (
         .clk(clk), .rst(rst),
-        .wr(mct_wr), .wn_i(mct_wn),
-        .ra_i(if_pc),
-        .in(rom_rn), .out(rom_wn), 
-        .ok(mct_ok),
-        .rn_o(mct_rn),
-        .ad_o(rom_a),
-        .wr_o(rom_wr)
+        .if_a(if_pc),
+        .in(rom_rn),
+        .out(rom_wn), 
+        .if_ok(if_ok),
+        .if_n(if_mct_rn),
+        .ad(rom_a),
+        .wr(rom_wr),
+        .mm_wr(mm_wr),
+        .mm_n_i(mm_n_i),
+        .mm_n_o(mm_n_o),
+        .mm_a(mm_a),
+        .mm_ok(mm_ok),
+        .mm_e(mm_e)
     );
 
     inf if0 (
         .clk(clk), .rst(rst),
-        .dt(mct_rn),
-        .ok(mct_ok),
+        .dt(if_mct_rn),
+        .ok(if_ok),
         .pc(if_pc),
-        .is(if_is)
+        .is(if_is),
+        .id_if_pc (if_id_if_pc),
+        .id_if_pce(if_id_if_pce)
     );
 
     if_id if_id0 (
@@ -96,7 +120,8 @@ module risc (
         .if_pc(if_pc),
         .if_is(if_is),
         .id_pc(id_pc),
-        .id_is(id_is)
+        .id_is(id_is),
+        .stl(stl)
     );
 
     id id0 (
@@ -112,7 +137,11 @@ module risc (
         .wa(id_wa), .we(id_we),
 
         .ex_wa(ex_wa_o), .ex_wn(ex_wn_o), .ex_we(ex_we_o),
-        .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o)
+        .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o),
+    
+        .id_if_pc (id_id_if_pc),
+        .id_if_pce(id_id_if_pce),
+        .id_if_off(id_id_if_off)
     );
 
     regfile regfile0 (
@@ -130,7 +159,16 @@ module risc (
         .id_n1(id_n1), .id_n2(id_n2), .id_wa(id_wa), .id_we(id_we),
 
         .ex_t(ex_t), .ex_st(ex_st), .ex_sst(ex_sst),
-        .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we)
+        .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we),
+    
+        .id_if_pc_i  (id_id_if_pc),
+        .id_if_pce_i (id_id_if_pce),
+        .id_if_off_i (id_id_if_off),
+
+        .id_if_pc_o  (if_id_if_pc),
+        .id_if_pce_o (if_id_if_pce),
+
+        .stl(stl)
     );
 
     ex ex0 (
@@ -139,21 +177,38 @@ module risc (
         .t(ex_t), .st(ex_st), .sst(ex_sst),
         .n1(ex_n1), .n2(ex_n2), .wa(ex_wa), .we(ex_we),
 
-        .wa_o(ex_wa_o), .we_o(ex_we_o), .wn_o(ex_wn_o)
+        .wa_o(ex_wa_o), .we_o(ex_we_o), .wn_o(ex_wn_o),
+    
+        .ex_mem_e(ex_mem_e)
     );
 
     ex_mm ex_mm0 (
         .clk(clk),  .rst(rst),
 
         .ex_wa(ex_wa_o), .ex_we(ex_we_o), .ex_wn(ex_wn_o),
-        .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn)
+        .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn),
+        
+        .ex_mem_e(ex_mem_e),
+        .mm_mem_e(mm_mem_e),
+        .stl(stl)
     );
 
     mm mm0 (
         .clk(clk),  .rst(rst),
 
         .wn(mm_wn), .wa(mm_wa), .we(mm_we),
-        .wn_o(mm_wn_o), .wa_o(mm_wa_o), .we_o(mm_we_o)
+        .wn_o(mm_wn_o), .wa_o(mm_wa_o), .we_o(mm_we_o),
+    
+        .mm_mem_e(mm_mem_e),
+
+        .mm_mct_a(mm_a), 
+        .mm_mct_n_i(mm_n_i), 
+        .mm_mct_n_o(mm_n_o), 
+        .mm_mct_wr(mm_wr),
+        .mm_mct_ok(mm_ok),
+        .mm_mct_e(mm_e),
+
+        .stl(stl)
     );
 
     mm_wb mm_wb0 (

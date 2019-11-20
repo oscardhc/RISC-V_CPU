@@ -75,6 +75,9 @@ module single_port_ram_sync
 reg [DATA_WIDTH-1:0] ram [2**ADDR_WIDTH-1:0];
 reg [ADDR_WIDTH-1:0] q_addr_a;
 
+reg [31:0] m23;
+assign m23 = ram[23];
+
 always @(posedge clk)
   begin
     if (we)
@@ -92,6 +95,7 @@ initial begin
     ram[i] = 0;
   end
   $readmemb("test.data", ram); // add test.data to vivado project or specify a valid file path
+  $display("ram %h %h %h %h", ram[0], ram[1], ram[2], ram[3]);
 end
 
 endmodule

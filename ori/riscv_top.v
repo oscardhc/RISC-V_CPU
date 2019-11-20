@@ -1,9 +1,8 @@
 // riscv top module file
 // modification allowed for debugging purposes
 
-`include "risc.v"
-`include "ram.v"
-`include "hci.v"
+// `include "risc.v"
+// `include "ram.v"
 
 module riscv_top
 #(
@@ -161,5 +160,6 @@ assign cpumc_din    = (hci_active) ? hci_ram_dout    : cpu_ram_dout;
 
 assign cpu_ram_din 	= (hci_io_en)  ? hci_io_dout 	 : ram_dout;
 assign hci_ram_din 	= ram_dout;
+
 
 endmodule

@@ -11,7 +11,11 @@ module ex (
 
     output  reg[4:0]    wa_o,
     output  reg         we_o,
-    output  reg[31:0]   wn_o
+    output  reg[31:0]   wn_o,
+
+    output  reg[3:0]    ex_mem_e,
+    output  reg[31:0]   ex_mem_n
+    // e 0/1: enable(0/1) + length(1/4) + wr(r/w)
 );
 
     reg[31:0]   res;
@@ -20,7 +24,7 @@ module ex (
         if (rst == 1'b1 || t == 6'h0) begin
             res = 32'h0;
         end else begin
-            $display("%h t %h st %h sst %h", 7'b0010011, t, st, sst);
+            $display("t %b st %b sst %b", t, st, sst);
             case (t)
                 7'b0010011: begin
                     case (st)
@@ -41,6 +45,19 @@ module ex (
                         end
                     endcase
                 end
+                7'b1101111: begin
+                    res = n2;
+                end
+                7'b1100111: begin
+                    case (st)
+                        3'b010: res = n2;
+                    endcase
+                end
+                7'b0100011: begin
+                    case(st)
+                        3'b010: res = 
+                    endcase
+                end
                 default: begin
                     res = 32'h0;
                 end
@@ -53,10 +70,10 @@ module ex (
         wa_o = wa;
         we_o = we;
         case (t)
-            7'b0010011: begin
-                // $display("> write %d", res);
-                wn_o = res;
-            end
+            7'b0010011: wn_o = res;
+            7'b1101111: wn_o = res;
+            7'b1100111: wn_o = res;
+            7'b0100011: wn_o = res;
             default: begin
                 wn_o = 32'h0;
             end

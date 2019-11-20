@@ -1,9 +1,10 @@
 // testbench top module file
 // for simulation only
 
-`include "riscv_top.v"
+// `include "riscv_top.v"
 
-`timescale 1ns/1ps
+// `timescale 1ns/1ps
+
 module testbench;
 
 reg clk;
@@ -22,7 +23,7 @@ initial begin
   rst=1;
   repeat(1) #1 clk=!clk;
   rst=0; 
-  repeat(40) #1 begin
+  repeat(90) #1 begin
     clk=!clk;
   end
   $finish;

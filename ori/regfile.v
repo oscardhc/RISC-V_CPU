@@ -18,14 +18,15 @@ module regfile(
     reg[31:0]   r[31:0];
     
     always @ (posedge clk) begin
-        if (rst == 1'b0) begin
-            r[0] = 32'h0;
-            r[1] = 32'h0;
-            r[2] = 32'h0;
-            r[3] = 32'h0;
-            r[4] = 32'h0;
+        if (rst == 1'b1) begin
+            r[0] <= 32'h0;
+            r[1] <= 32'h0;
+            r[2] <= 32'h0;
+            r[3] <= 32'h0;
+            r[4] <= 32'h0;
+            r[5] <= 32'h0;
         end
-        r[0] = 32'h0;
+        r[0] <= 32'h0;
     end
 
     always @ (posedge clk) begin

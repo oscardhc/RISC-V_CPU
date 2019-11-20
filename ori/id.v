@@ -25,11 +25,16 @@ module id(
 
     input   wire[4:0]   mm_wa,
     input   wire[31:0]  mm_wn,
-    input   wire        mm_we
+    input   wire        mm_we,
+
+    output  reg[31:0]   id_if_pc,
+    output  reg         id_if_pce,
+    output  reg[31:0]   id_if_off
 );
 
     reg[31:0]   imm;
     reg         vld;
+    reg         next_invalid;
 
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
@@ -46,19 +51,27 @@ module id(
             we  = 1'h0;
         end else begin
 
-            t = is[6:0];
-            st = is[14:12];
+            t   = is[6:0];
+            st  = is[14:12];
             sst = is[30:30];
 
             ra1 = is[19:15];
             ra2 = is[24:20];
-            $display("ra1 %d %h %h", ra1, is[19:15], is);
+            wa  = is[11:7];
+
+            id_if_pce = 0;
+            if (next_invalid == 1'b1) begin
+                t = 7'h0;
+            end
+
+            next_invalid = 0;
+
+            $display("id %h", is);
 
             imm = 32'h00000000;
 
             case (t)
                 7'b0010011: begin
-                    wa  = is[11:7];
                     we  = 1'b1;
                     re1 = 1'b1;
                     re2 = 1'b0;
@@ -74,7 +87,53 @@ module id(
                         end
                     endcase
                 end
+                7'b1101111: begin
+                    we  = 1'b1;
+                    re1 = 1'b0;
+                    re2 = 1'b0;
+                    imm = pc;
+                    id_if_pce = 1'b1;
+                    id_if_pc  = {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
+                    $display("JAL!! %d %d", pc, id_if_pc);
+                    next_invalid = 1'b1;
+                end
+                7'b1100111: begin
+                    case(st)
+                        3'b010: begin
+                            we  = 1'b1;
+                            re1 = 1'b1;
+                            re2 = 1'b0;
+                            imm = pc;
+                            id_if_pce = 1'b1;
+                            id_if_pc  = {{21{is[31]}}, is[30:20]};
+                        end
+                    endcase
+                end
+                7'b0100011: begin
+                    case(st)
+                        3'b010: begin
+                            we  = 1'b0;
+                            re1 = 1'b1;
+                            re2 = 1'b1;
+                        end
+                    endcase
+                end
+                default: begin
+                    we  = 1'b0;
+                    re1 = 1'b0;
+                    re2 = 1'b0;
+                end
             endcase
+        end
+    end
+
+    always @ (out1) begin
+        if (rst == 1'b1) begin
+            id_if_off = 32'h0;
+        end else if (t == 7'b1101111) begin
+            id_if_off = pc - 4;
+        end else if (t == 7'b1100111 && st == 3'b010) begin
+            id_if_off = out1;
         end
     end
 
