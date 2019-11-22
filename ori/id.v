@@ -101,8 +101,8 @@ module id(
                     case(st)
                         3'b010: begin
                             we  = 1'b1;
-                            re1 = 1'b1;
-                            re2 = 1'b0;
+                            re1 = 1'b0;
+                            re2 = 1'b1;
                             imm = pc;
                             id_if_pce = 1'b1;
                             id_if_pc  = {{21{is[31]}}, is[30:20]};
@@ -118,6 +118,18 @@ module id(
                         end
                     endcase
                 end
+                7'b0000011: begin
+                    we  = 1'b1;
+                    re1 = 1'b1;
+                    re2 = 1'b0;
+                    imm = {{21{is[31]}}, is[30:20]};
+                    case(st)
+                        3'b010: begin
+                        end
+                        3'b001: begin
+                        end
+                    endcase
+                end
                 default: begin
                     we  = 1'b0;
                     re1 = 1'b0;
@@ -127,13 +139,13 @@ module id(
         end
     end
 
-    always @ (out1) begin
+    always @ (out2) begin
         if (rst == 1'b1) begin
             id_if_off = 32'h0;
         end else if (t == 7'b1101111) begin
             id_if_off = pc - 4;
         end else if (t == 7'b1100111 && st == 3'b010) begin
-            id_if_off = out1;
+            id_if_off = out2;
         end
     end
 
@@ -161,7 +173,7 @@ module id(
         end else if (re2 == 1'b1 && mm_wa == ra2 && mm_we == 1'b1) begin
             out2 = mm_wn;
         end else if (re2 == 1'b1) begin
-            out2 = rn1;
+            out2 = rn2;
         end else if (re2 == 1'b0) begin
             out2 = imm;
         end else begin

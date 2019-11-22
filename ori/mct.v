@@ -13,11 +13,16 @@ module mct (
 	output	reg[7:0]	out,
 	output 	reg[31:0]	if_n,
 	output	reg[31:0]	ad,
-	output	reg			wr		
+	output	reg			wr,
+	input	wire[1:0]	mm_cu		
 );
 
 reg[1:0]	cu;
 reg[1:0]	cur_mode; // 1-mem 0-inf
+reg			nready;
+
+reg[31:0]	ls_if_a;
+reg			ls_mm_e;
 
 always @ (negedge clk) begin 
 	if (rst == 1'b1) begin
@@ -29,29 +34,146 @@ always @ (negedge clk) begin
 		if_ok <= 1'h0;
 		mm_ok <= 1'h0;
 		cur_mode <= 1'b0;
+		ls_if_a <= 32'h0;
+		ls_mm_e <= 1'h0;
+		nready <= 1'h0;
 	end
 end
 
-always @ (if_a, mm_e) begin
-	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-		if (mm_e == 1'b1) begin
-			cur_mode = 1;
-			ad = mm_a;
-			wr = mm_wr;
-		end else begin
-			cur_mode = 0;
-			ad = if_a;
-			wr = 0;
+always @ (posedge clk) begin
+	if (rst == 1'b0) begin
+		if (mm_e != ls_mm_e || if_a != ls_if_a) begin
+			if (if_ok == 1'b1 || mm_ok == 1'b1) begin
+				// $display("MAYBE CHANGE %b", mm_e);
+				if (mm_e == 1'b1) begin
+					cur_mode <= 1;
+					if (ad != mm_a) begin
+						ad <= mm_a;
+						nready <= 1;
+					end
+					wr <= mm_wr;
+					cu <= mm_cu;
+					ls_mm_e <= mm_e;
+				end else begin
+					cur_mode <= 0;
+					if (ad != if_a) begin
+						ad <= if_a;
+						nready <= 1;
+					end
+					wr <= 0;
+					cu <= 0;
+					ls_if_a <= if_a;
+				end
+				if (mm_e != ls_mm_e) begin
+					mm_ok <= 1'b0;
+				end 
+				if (if_a != ls_if_a) begin
+					if_ok <= 1'b0;
+				end
+			end
 		end
-	end
+	end else ad <= 32'h0;
 end
+
+// always @ (if_a) begin
+// 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
+// 		// $display("MAYBE CHANGE %b", mm_e);
+// 		if (mm_e == 1'b1) begin
+// 			cur_mode = 1;
+// 			if (ad != mm_a) begin
+// 				ad = mm_a;
+// 				nready = 1;
+// 			end
+// 			wr = mm_wr;
+// 			cu = mm_cu;
+// 		end else begin
+// 			cur_mode = 0;
+// 			if (ad != if_a) begin
+// 				$display("??????? %h %h", ad, if_a);
+// 				ad = if_a;
+// 				nready = 1;
+// 			end
+// 			wr = 0;
+// 			cu = 0;
+// 		end
+// 	end
+// 	if_ok = 1'b0;
+// end
+
+// always @ (posedge mm_e) begin
+// 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
+// 		$display("MAYBE CHANGE %d %b", $time, mm_e);
+// 		if (mm_e == 1'b1) begin
+// 			cur_mode = 1;
+// 			if (ad != mm_a) begin
+// 				ad = mm_a;
+// 				nready = 1;
+// 			end
+// 			wr = mm_wr;
+// 			cu = mm_cu;
+// 		end else begin
+// 			cur_mode = 0;
+// 			if (ad != if_a) begin
+// 				ad = if_a;
+// 				nready = 1;
+// 			end
+// 			wr = 0;
+// 			cu = 0;
+// 		end
+// 	end
+// 	mm_ok <= 1'b0;
+// end
+
+// always @ (negedge mm_e) begin
+// 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
+// 		$display("MAYBE CHANGE %d %b", $time, mm_e);
+// 		if (mm_e == 1'b1) begin
+// 			cur_mode = 1;
+// 			if (ad != mm_a) begin
+// 				ad = mm_a;
+// 				nready = 1;
+// 			end
+// 			wr = mm_wr;
+// 			cu = mm_cu;
+// 		end else begin
+// 			cur_mode = 0;
+// 			if (ad != if_a) begin
+// 				ad = if_a;
+// 				nready = 1;
+// 			end
+// 			wr = 0;
+// 			cu = 0;
+// 		end
+// 	end
+// 	mm_ok <= 1'b0;
+// end
+
+// always @ (if_a, mm_e) begin
+// 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
+// 		// $display("MAYBE CHANGE %b", mm_e);
+// 		if (mm_e == 1'b1) begin
+// 			cur_mode = 1;
+// 			ad = mm_a;
+// 			wr = mm_wr;
+// 			cu = mm_cu;
+// 			// mm_ok = 0;
+// 		end else begin
+// 			cur_mode = 0;
+// 			ad = if_a;
+// 			wr = 0;
+// 			cu = 0;
+// 			// if_ok = 0;
+// 		end
+// 	end
+// end
 
 always @ (negedge clk) begin
 	if (rst == 1'b0) begin
 		$display("\t\t\t MCT ad %h", ad);
-		if (cur_mode == 1'b1) begin
-			if_ok <= 1'b0;
-			mm_ok <= 1'b0;
+		if (nready == 1) begin
+			nready <= 0;
+		end else if (cur_mode == 1'b1) begin
+			// mm_ok <= 1'b0;
 			ad <= ad + 1;
 			if (mm_wr == 1'b0) begin
 				case (cu)
@@ -71,6 +193,7 @@ always @ (negedge clk) begin
 			            mm_n_o[ 7: 0] <= in;
 			            cu <= 0;
 			            mm_ok <= 1'b1;
+			            $display("~~~~~~~~~~~~~~~~~~~ %d", $time);
 			        end
 	        	endcase
 	        end else begin
@@ -95,9 +218,8 @@ always @ (negedge clk) begin
 	        	endcase
 	        end
 		end else begin
-			if_ok <= 1'b0;
-			mm_ok <= 1'b0;
 			ad <= ad + 1;
+			// if_ok <= 1'b0;
 			case (cu)
 				2'h0: begin
 		            if_n[31:24] <= in;

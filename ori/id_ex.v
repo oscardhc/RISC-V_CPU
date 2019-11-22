@@ -27,7 +27,7 @@ module id_ex (
     output  reg[31:0]   id_if_pc_o,
     output  reg         id_if_pce_o,
 
-    input   wire        stl
+    input   wire        stl_mm
 );
 
     always @ (posedge clk) begin
@@ -39,7 +39,7 @@ module id_ex (
             ex_n2   <= 32'h0;
             ex_wa   <= 5'h0;
             ex_we   <= 1'h0;
-        end else if (stl != 1'b1) begin
+        end else if (stl_mm != 1'b1) begin
             $display("[%d] - id %d %d", $time, id_n1, id_n2);
             ex_t    <= id_t;
             ex_st   <= id_st;
@@ -55,7 +55,7 @@ module id_ex (
         if (rst == 1'b1) begin
             id_if_pc_o  <= 32'h0;
             id_if_pce_o <= 1'b0;
-        end else begin
+        end else if (stl_mm != 1'b1) begin
             id_if_pc_o  <= id_if_pc_i + id_if_off_i;
             id_if_pc_o[0] <= 1'b0;
             id_if_pce_o <= id_if_pce_i;

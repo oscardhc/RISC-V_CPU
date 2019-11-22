@@ -19,9 +19,12 @@ module mm (
     output  reg         mm_mct_wr,
     input   wire        mm_mct_ok,
     output  reg         mm_mct_e,
+    output  reg[1:0]    mm_mct_cu,
 
     output  reg         stl
 );
+
+    reg[2:0]    cu;
 
     always @ (*) begin
         if (rst == 1'b1) begin
@@ -29,14 +32,79 @@ module mm (
             wa_o = 5'h0;
             wn_o = 32'h0;
             stl  = 1'b0;
-        end else begin
-            if (mm_mct_e != 0'b0) begin
-                
-            end
-            we_o = we;
-            wa_o = wa;
-            wn_o = wn;
         end
     end
+
+    always @ (*) begin
+        if (rst == 1'b0) begin
+            we_o = we;
+            wa_o = wa;
+            if (mm_mem_e[3] != 1'b0) begin
+                $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
+                case (mm_mem_e[0])
+                    1'b0: begin
+                        if (mm_mct_ok == 1'b1) begin
+                            $display("!!!!!!!!!!!!!!!!!!!! %d MM OK!", $time);
+                            stl      = 1'b0;
+                            mm_mct_e = 1'b0;
+                            case (mm_mct_cu)
+                                2'h0: wn_o = mm_mct_n_o;
+                                2'h2: wn_o = {{17{mm_mct_n_o[15]}}, mm_mct_n_o[14:0]};
+                                2'h3: wn_o = {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
+                            endcase
+                        end else begin
+                            $display("!!!!!!!!!!!!!!!!!!!! %d MM NOT OK!", $time);
+                            mm_mct_cu   = mm_mem_e[2:1];
+                            stl         = 1'b1;
+                            mm_mct_a    = wn;
+                            mm_mct_wr   = 1'b0;
+                            mm_mct_e    = 1'b1;
+                        end
+                    end
+                    1'b1: begin
+                        $display("????????????? NOT POSSIBLE!");
+                    end
+                endcase
+            end else begin
+                wn_o = wn;
+            end
+        end
+    end
+
+    // always @ (negedge clk) begin
+    //     if (rst == 1'b0) begin
+    //         we_o <= we;
+    //         wa_o <= wa;
+    //         if (mm_mem_e[3] != 1'b0) begin
+    //             $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
+    //             case (mm_mem_e[0])
+    //                 1'b0: begin
+    //                     if (mm_mct_ok == 1'b1) begin
+    //                         $display("!!!!!!!!!!!!!!!!!!!! %d MM OK!", $time);
+    //                         stl      <= 1'b0;
+    //                         mm_mct_e <= 1'b0;
+    //                         case (mm_mct_cu)
+    //                             2'h0: wn_o <= mm_mct_n_o;
+    //                             2'h2: wn_o <= {{17{mm_mct_n_o[15]}}, mm_mct_n_o[14:0]};
+    //                             2'h3: wn_o <= {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
+    //                         endcase
+    //                     end else begin
+    //                         $display("!!!!!!!!!!!!!!!!!!!! %d MM NOT OK!", $time);
+    //                         mm_mct_cu   <= mm_mem_e[2:1];
+    //                         stl         <= 1'b1;
+    //                         mm_mct_a    <= wn;
+    //                         mm_mct_wr   <= 1'b0;
+    //                         mm_mct_e    <= 1'b1;
+    //                     end
+    //                 end
+    //                 1'b1: begin
+    //                     $display("????????????? NOT POSSIBLE!");
+    //                 end
+    //             endcase
+    //         end else begin
+    //             wn_o <= wn;
+    //         end
+    //     end
+    // end
 
 endmodule

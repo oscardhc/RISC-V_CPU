@@ -23,8 +23,10 @@ module ex (
     always @ (*) begin
         if (rst == 1'b1 || t == 6'h0) begin
             res = 32'h0;
+            ex_mem_e = 4'h0;
         end else begin
             $display("t %b st %b sst %b", t, st, sst);
+            ex_mem_e = 4'h0;
             case (t)
                 7'b0010011: begin
                     case (st)
@@ -50,12 +52,20 @@ module ex (
                 end
                 7'b1100111: begin
                     case (st)
-                        3'b010: res = n2;
+                        3'b010: res = n1;
                     endcase
                 end
                 7'b0100011: begin
                     case(st)
-                        3'b010: res = 
+                        // 3'b010: res = 
+                    endcase
+                end
+                7'b0000011: begin
+                    res = n1 + n2;
+                    ex_mem_n = 32'h0;
+                    case(st)
+                        3'b010: ex_mem_e = {1'b1, 2'h0, 1'b0};
+                        3'b001: ex_mem_e = {1'b1, 2'h2, 1'b0};
                     endcase
                 end
                 default: begin
@@ -74,6 +84,7 @@ module ex (
             7'b1101111: wn_o = res;
             7'b1100111: wn_o = res;
             7'b0100011: wn_o = res;
+            7'b0000011: wn_o = res;
             default: begin
                 wn_o = 32'h0;
             end

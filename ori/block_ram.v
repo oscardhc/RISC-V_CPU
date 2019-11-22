@@ -75,9 +75,6 @@ module single_port_ram_sync
 reg [DATA_WIDTH-1:0] ram [2**ADDR_WIDTH-1:0];
 reg [ADDR_WIDTH-1:0] q_addr_a;
 
-reg [31:0] m23;
-assign m23 = ram[23];
-
 always @(posedge clk)
   begin
     if (we)

@@ -8,7 +8,9 @@ module mm_wb (
 
     output  reg         wb_we,
     output  reg[4:0]    wb_wa,
-    output  reg[31:0]   wb_wn
+    output  reg[31:0]   wb_wn,
+
+    input   wire        stl_mm
 );
 
     always @ (posedge clk) begin
@@ -16,7 +18,7 @@ module mm_wb (
             wb_we <= 1'b0;
             wb_wa <= 5'h0;
             wb_wn <= 32'h0;
-        end else begin
+        end else if (stl_mm != 1'b1) begin
             wb_we <= mm_we;
             wb_wa <= mm_wa;
             wb_wn <= mm_wn;

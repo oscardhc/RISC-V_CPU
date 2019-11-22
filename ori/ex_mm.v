@@ -14,7 +14,7 @@ module ex_mm (
     output  reg[3:0]    mm_mem_e,
     output  reg[31:0]   mm_mem_n,
 
-    input   wire        stl
+    input   wire        stl_mm
 );
 
     always @ (posedge clk) begin
@@ -22,12 +22,13 @@ module ex_mm (
             mm_wa <= 5'h0;
             mm_we <= 1'h0;
             mm_wn <= 32'h0;
-        end else if (stl != 1'b1) begin
+        end else if (stl_mm != 1'b1) begin
             $display("ex_wn %d", ex_wn);
             mm_wa <= ex_wa;
             mm_we <= ex_we;
             mm_wn <= ex_wn;
             mm_mem_e <= ex_mem_e;
+            mm_mem_n <= ex_mem_n;
         end
     end
 
