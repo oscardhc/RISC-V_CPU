@@ -1,4 +1,6 @@
 
+import sys
+
 def pb(x, b):
     s = ''
     for _ in range(b):
@@ -15,8 +17,10 @@ def toi(a):
 
 cc = -1
 
-with open('jal.code', 'r') as fin:
-    with open('test.data', 'w') as f:
+name = sys.argv[1]
+
+with open(name + '.code', 'r') as fin:
+    with open(name + '.data', 'w') as f:
         for l in fin:
             cc = cc + 1;
             a = l.split(' ')
