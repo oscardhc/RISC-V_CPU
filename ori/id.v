@@ -18,6 +18,7 @@ module id(
     output  reg[31:0]   out2,
     output  reg[4:0]    wa,
     output  reg         we,
+    output  reg[31:0]   outn,
 
     input   wire[4:0]   ex_wa,
     input   wire[31:0]  ex_wn,
@@ -101,8 +102,8 @@ module id(
                     case(st)
                         3'b010: begin
                             we  = 1'b1;
-                            re1 = 1'b0;
-                            re2 = 1'b1;
+                            re1 = 1'b1;
+                            re2 = 1'b0;
                             imm = pc;
                             id_if_pce = 1'b1;
                             id_if_pc  = {{21{is[31]}}, is[30:20]};
@@ -110,25 +111,16 @@ module id(
                     endcase
                 end
                 7'b0100011: begin
-                    case(st)
-                        3'b010: begin
-                            we  = 1'b0;
-                            re1 = 1'b1;
-                            re2 = 1'b1;
-                        end
-                    endcase
+                    we  = 1'b0;
+                    re1 = 1'b1;
+                    re2 = 1'b1;
+                    outn = {{21{is[31]}}, is[30:25], is[11:7]};
                 end
                 7'b0000011: begin
                     we  = 1'b1;
                     re1 = 1'b1;
                     re2 = 1'b0;
                     imm = {{21{is[31]}}, is[30:20]};
-                    case(st)
-                        3'b010: begin
-                        end
-                        3'b001: begin
-                        end
-                    endcase
                 end
                 default: begin
                     we  = 1'b0;
@@ -139,13 +131,13 @@ module id(
         end
     end
 
-    always @ (out2) begin
+    always @ (out1) begin
         if (rst == 1'b1) begin
             id_if_off = 32'h0;
         end else if (t == 7'b1101111) begin
             id_if_off = pc - 4;
         end else if (t == 7'b1100111 && st == 3'b010) begin
-            id_if_off = out2;
+            id_if_off = out1;
         end
     end
 

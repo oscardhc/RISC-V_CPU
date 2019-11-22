@@ -10,6 +10,7 @@ module id_ex (
     input   wire[31:0]  id_n2,
     input   wire[4:0]   id_wa,
     input   wire        id_we,
+    input   wire[31:0]  id_nn,
 
     output  reg[6:0]    ex_t,
     output  reg[2:0]    ex_st,
@@ -19,6 +20,7 @@ module id_ex (
     output  reg[31:0]   ex_n2,
     output  reg[4:0]    ex_wa,
     output  reg         ex_we,
+    output  reg[31:0]   ex_nn,
 
     input   wire[31:0]  id_if_off_i,
     input   wire[31:0]  id_if_pc_i,
@@ -48,6 +50,7 @@ module id_ex (
             ex_n2   <= id_n2;
             ex_wa   <= id_wa;
             ex_we   <= id_we;
+            ex_nn   <= id_nn;
         end
     end
 

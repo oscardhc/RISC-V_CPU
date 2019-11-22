@@ -77,10 +77,12 @@ reg [ADDR_WIDTH-1:0] q_addr_a;
 
 always @(posedge clk)
   begin
-    if (we)
-        ram[addr_a] <= din_a;
+    if (we) begin
+      ram[addr_a] <= din_a;
+      $display("%d WRITE WRITE!!! %h %h", $time, addr_a, din_a);
+    end
     q_addr_a <= addr_a;
-    // $display("mem wr: %d addr: %h %d data: %h   %h %h", we, q_addr_a, q_addr_a, ram[q_addr_a], dout_a, ram[5]);
+    $display("%d (%h %h %h %h)", $time, ram[35], ram[34], ram[33], ram[32]);
   end
 
 assign dout_a = ram[q_addr_a];

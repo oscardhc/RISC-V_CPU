@@ -52,6 +52,7 @@ module risc (
     wire[31:0]  id_n2;
     wire[4:0]   id_wa;
     wire        id_we;
+    wire[31:0]  id_nn;
 
     wire[6:0]   ex_t;
     wire[2:0]   ex_st;
@@ -60,6 +61,7 @@ module risc (
     wire[31:0]  ex_n2;
     wire[4:0]   ex_wa;
     wire        ex_we;
+    wire[31:0]  ex_nn;
 
     wire[4:0]   ex_wa_o;
     wire        ex_we_o;
@@ -70,7 +72,9 @@ module risc (
     wire[31:0]  mm_wn;
 
     wire[3:0]   ex_mem_e;
+    wire[31:0]  ex_mem_n;
     wire[3:0]   mm_mem_e;
+    wire[31:0]  mm_mem_n;
 
     wire[4:0]   mm_wa_o;
     wire        mm_we_o;
@@ -141,6 +145,7 @@ module risc (
         .t(id_t), .st(id_st), .sst(id_sst),
         .out1(id_n1), .out2(id_n2),
         .wa(id_wa), .we(id_we),
+        .outn(id_nn),
 
         .ex_wa(ex_wa_o), .ex_wn(ex_wn_o), .ex_we(ex_we_o),
         .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o),
@@ -163,10 +168,12 @@ module risc (
         
         .id_t(id_t), .id_st(id_st), .id_sst(id_sst),
         .id_n1(id_n1), .id_n2(id_n2), .id_wa(id_wa), .id_we(id_we),
+        .id_nn(id_nn),
 
         .ex_t(ex_t), .ex_st(ex_st), .ex_sst(ex_sst),
         .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we),
-    
+        .ex_nn(ex_nn),
+
         .id_if_pc_i  (id_id_if_pc),
         .id_if_pce_i (id_id_if_pce),
         .id_if_off_i (id_id_if_off),
@@ -184,8 +191,9 @@ module risc (
         .n1(ex_n1), .n2(ex_n2), .wa(ex_wa), .we(ex_we),
 
         .wa_o(ex_wa_o), .we_o(ex_we_o), .wn_o(ex_wn_o),
-    
-        .ex_mem_e(ex_mem_e)
+        .nn(ex_nn),
+        
+        .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)
     );
 
     ex_mm ex_mm0 (
@@ -195,7 +203,9 @@ module risc (
         .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn),
         
         .ex_mem_e(ex_mem_e),
+        .ex_mem_n(ex_mem_n),
         .mm_mem_e(mm_mem_e),
+        .mm_mem_n(mm_mem_n),
         .stl_mm(stl_mm)
     );
 
@@ -206,6 +216,7 @@ module risc (
         .wn_o(mm_wn_o), .wa_o(mm_wa_o), .we_o(mm_we_o),
     
         .mm_mem_e(mm_mem_e),
+        .mm_mem_n(mm_mem_n),
 
         .mm_mct_a(mm_a), 
         .mm_mct_n_i(mm_n_i), 

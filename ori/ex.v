@@ -12,6 +12,7 @@ module ex (
     output  reg[4:0]    wa_o,
     output  reg         we_o,
     output  reg[31:0]   wn_o,
+    input   wire[31:0]  nn,
 
     output  reg[3:0]    ex_mem_e,
     output  reg[31:0]   ex_mem_n
@@ -56,16 +57,21 @@ module ex (
                     endcase
                 end
                 7'b0100011: begin
+                    res = n1 + nn;
+                    ex_mem_n = n2;
                     case(st)
-                        // 3'b010: res = 
+                        3'b000: ex_mem_e = {1'b1, 2'h0, 1'b1};
+                        3'b001: ex_mem_e = {1'b1, 2'h1, 1'b1};
+                        3'b010: ex_mem_e = {1'b1, 2'h3, 1'b1};
                     endcase
                 end
                 7'b0000011: begin
                     res = n1 + n2;
                     ex_mem_n = 32'h0;
                     case(st)
-                        3'b010: ex_mem_e = {1'b1, 2'h0, 1'b0};
-                        3'b001: ex_mem_e = {1'b1, 2'h2, 1'b0};
+                        3'b000: ex_mem_e = {1'b1, 2'h0, 1'b0};
+                        3'b001: ex_mem_e = {1'b1, 2'h1, 1'b0};
+                        3'b010: ex_mem_e = {1'b1, 2'h3, 1'b0};
                     endcase
                 end
                 default: begin

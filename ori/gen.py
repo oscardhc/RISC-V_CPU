@@ -15,7 +15,7 @@ def toi(a):
 
 cc = -1
 
-with open('test.code', 'r') as fin:
+with open('jal.code', 'r') as fin:
     with open('test.data', 'w') as f:
         for l in fin:
             cc = cc + 1;
@@ -31,10 +31,10 @@ with open('test.code', 'r') as fin:
                 o += pb(int(a[1][1:]), 5)
                 o += pb(0b0010011, 7)
             elif a[0] == "ORI":
-                o += pb(int(a[3]), 12)
-                o += pb(int(a[2][1:]), 5)
+                o += pb(eval(a[3]), 12)
+                o += pb(eval(a[2][1:]), 5)
                 o += pb(0b110, 3)
-                o += pb(int(a[1][1:]), 5)
+                o += pb(eval(a[1][1:]), 5)
                 o += pb(0b0010011, 7)
             elif a[0] == "JAL":
                 print("a[2] = ", a[2])
@@ -90,16 +90,32 @@ with open('test.code', 'r') as fin:
                     o += pb(0b001, 3)
                     o += pb(int(a[1][1:]), 5)
                     o += pb(0b0000011, 7)
+            elif a[0] == "SB":
+                if (int(a[2]) >= 0):
+                    o += pb(int(a[2])>>5, 7)
+                    o += pb(int(a[1][1:]), 5)
+                    o += pb(int(a[3][1:]), 5)
+                    o += pb(0b000, 3)
+                    o += pb(int(a[2])&31, 5)
+                    o += pb(0b0100011, 7)
             elif a[0] == "SW":
                 if (int(a[2]) >= 0):
                     o += pb(int(a[2])>>5, 7)
                     o += pb(int(a[1][1:]), 5)
                     o += pb(int(a[3][1:]), 5)
                     o += pb(0b010, 3)
-                    o += pb(int(a[2])&32, 5)
+                    o += pb(int(a[2])&31, 5)
+                    o += pb(0b0100011, 7)
+            elif a[0] == "SH":
+                if (int(a[2]) >= 0):
+                    o += pb(int(a[2])>>5, 7)
+                    o += pb(int(a[1][1:]), 5)
+                    o += pb(int(a[3][1:]), 5)
+                    o += pb(0b001, 3)
+                    o += pb(int(a[2])&31, 5)
                     o += pb(0b0100011, 7)
             print(len(o), o, str(hex(toi(o)))[2:])
-            o = o
+            o = o[::-1]
             # print('32\'h' + str(hex(cc*4))[2:], ': rn_o <= 32\'h' + str(hex(toi(o)))[2:] + ';', file=f)
             for i in range(4):
-                print(o[i*8:i*8+8], file=f)
+                print(o[i*8:i*8+8][::-1], file=f)
