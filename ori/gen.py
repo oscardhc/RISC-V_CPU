@@ -60,7 +60,7 @@ with open(name + '.code', 'r') as fin:
                 if (int(a[3]) >= 0):
                     o += pb(int(a[3]), 12)
                     o += pb(int(a[2][1:]), 5)
-                    o += pb(0b010, 3)
+                    o += pb(0b000, 3)
                     o += pb(int(a[1][1:]), 5)
                     o += pb(0b1100111, 7)
                 else:
@@ -70,7 +70,7 @@ with open(name + '.code', 'r') as fin:
                         oo += '1' if o[ii] == '0' else '0';
                     o = str(bin(toi(oo)+1))[2:]
                     o += pb(int(a[2][1:]), 5)
-                    o += pb(0b010, 3)
+                    o += pb(0b000, 3)
                     o += pb(int(a[1][1:]), 5)
                     o += pb(0b1100111, 7)
             elif a[0] == "LB":

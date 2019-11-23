@@ -8,10 +8,10 @@ module ex_mm (
     output  reg         mm_we,
     output  reg[31:0]   mm_wn,
 
-    input   wire[3:0]   ex_mem_e,
+    input   wire[4:0]   ex_mem_e,
     input   wire[31:0]  ex_mem_n,
 
-    output  reg[3:0]    mm_mem_e,
+    output  reg[4:0]    mm_mem_e,
     output  reg[31:0]   mm_mem_n,
 
     input   wire        stl_mm

@@ -72,21 +72,35 @@ module id(
             imm = 32'h00000000;
 
             case (t)
+                7'b0110111: begin
+                    we  = 1'b1;
+                    re1 = 1'b0;
+                    re2 = 1'b0;
+                    imm = {is[31:12], 12'h0};
+                end
+                7'b0010111: begin
+                    we  = 1'b1;
+                    re1 = 1'b0;
+                    re2 = 1'b0;
+                    imm = {is[31:12], 12'h0};
+                end
                 7'b0010011: begin
                     we  = 1'b1;
                     re1 = 1'b1;
                     re2 = 1'b0;
                     case (st)
-                        3'b001: begin
-                            imm = {28'h0, is[23:20]};
-                        end
-                        3'b101: begin
+                        3'b001, 3'b101: begin
                             imm = {28'h0, is[23:20]};
                         end
                         default: begin
                             imm = {{21{is[31]}}, is[30:20]};
                         end
                     endcase
+                end
+                7'b0110011: begin
+                    we  = 1'b1;
+                    re1 = 1'b1;
+                    re2 = 1'b1;
                 end
                 7'b1101111: begin
                     we  = 1'b1;
@@ -95,12 +109,13 @@ module id(
                     imm = pc;
                     id_if_pce = 1'b1;
                     id_if_pc  = {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
+                    id_if_off = pc - 4;
                     $display("JAL!! %d %d", pc, id_if_pc);
                     next_invalid = 1'b1;
                 end
                 7'b1100111: begin
                     case(st)
-                        3'b010: begin
+                        3'b000: begin
                             we  = 1'b1;
                             re1 = 1'b1;
                             re2 = 1'b0;
@@ -134,9 +149,7 @@ module id(
     always @ (out1) begin
         if (rst == 1'b1) begin
             id_if_off = 32'h0;
-        end else if (t == 7'b1101111) begin
-            id_if_off = pc - 4;
-        end else if (t == 7'b1100111 && st == 3'b010) begin
+        end else if (t == 7'b1100111 && st == 3'h0)begin
             id_if_off = out1;
         end
     end
@@ -164,6 +177,8 @@ module id(
             out2 = ex_wn;
         end else if (re2 == 1'b1 && mm_wa == ra2 && mm_we == 1'b1) begin
             out2 = mm_wn;
+        end else if (t == 7'b0010111) begin
+            out2 = pc - 4;
         end else if (re2 == 1'b1) begin
             out2 = rn2;
         end else if (re2 == 1'b0) begin

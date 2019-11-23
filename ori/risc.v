@@ -71,9 +71,9 @@ module risc (
     wire        mm_we;
     wire[31:0]  mm_wn;
 
-    wire[3:0]   ex_mem_e;
+    wire[4:0]   ex_mem_e;
     wire[31:0]  ex_mem_n;
-    wire[3:0]   mm_mem_e;
+    wire[4:0]   mm_mem_e;
     wire[31:0]  mm_mem_n;
 
     wire[4:0]   mm_wa_o;
@@ -190,7 +190,7 @@ module risc (
         .t(ex_t), .st(ex_st), .sst(ex_sst),
         .n1(ex_n1), .n2(ex_n2), .wa(ex_wa), .we(ex_we),
 
-        .wa_o(ex_wa_o), .we_o(ex_we_o), .wn_o(ex_wn_o),
+        .wa_o(ex_wa_o), .we_o(ex_we_o), .res(ex_wn_o),
         .nn(ex_nn),
         
         .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)

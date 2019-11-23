@@ -11,7 +11,7 @@ module mm (
     output  reg[31:0]   wn_o,
 
     input   wire[31:0]  mm_mem_n,
-    input   wire[3:0]   mm_mem_e,
+    input   wire[4:0]   mm_mem_e,
 
     output  reg[31:0]   mm_mct_a,
     output  reg[31:0]   mm_mct_n_i,
@@ -44,20 +44,26 @@ module mm (
         if (rst == 1'b0) begin
             we_o = we;
             wa_o = wa;
-            if (mm_mem_e[3] != 1'b0) begin
+            if (mm_mem_e[4] != 1'b0) begin
                 $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
-                case (mm_mem_e[0])
+                case (mm_mem_e[1])
                     1'b0: begin
                         if (mm_mct_ok == 1'b1) begin
                             stl      = 1'b0;
                             mm_mct_e = 1'b0;
                             case (mm_mct_cu)
                                 2'h3: wn_o = mm_mct_n_o;
-                                2'h1: wn_o = {{17{mm_mct_n_o[15]}}, mm_mct_n_o[14:0]};
-                                2'h0: wn_o = {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
+                                2'h1: begin
+                                    if (mm_mem_e[0] == 1'b1) wn_o = {16'h0, mm_mct_n_o[15:0]};
+                                    else wn_o = {{17{mm_mct_n_o[15]}}, mm_mct_n_o[14:0]};
+                                end 
+                                2'h0: begin
+                                    if (mm_mem_e[0] == 1'b1) wn_o = {24'h0, mm_mct_n_o[ 7:0]};
+                                    else wn_o = {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
+                                end 
                             endcase
                         end else begin
-                            mm_mct_cu   = mm_mem_e[2:1];
+                            mm_mct_cu   = mm_mem_e[3:2];
                             stl         = 1'b1;
                             mm_mct_a    = wn;
                             mm_mct_wr   = 1'b0;
@@ -71,7 +77,7 @@ module mm (
                             mm_mct_e = 1'b0;
                         end else begin
                             mm_mct_n_i  = mm_mem_n;
-                            mm_mct_cu   = mm_mem_e[2:1];
+                            mm_mct_cu   = mm_mem_e[3:2];
                             stl         = 1'b1;
                             mm_mct_a    = wn;
                             mm_mct_wr   = 1'b1;
