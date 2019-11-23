@@ -110,7 +110,6 @@ module id(
                     id_if_pce = 1'b1;
                     id_if_pc  = {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
                     id_if_off = pc - 4;
-                    $display("JAL!! %d %d", pc, id_if_pc);
                     next_invalid = 1'b1;
                 end
                 7'b1100111: begin
