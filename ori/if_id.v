@@ -19,7 +19,7 @@ module if_id(
             id_is <= 32'h00000000;
         end else begin
             id_pc <= if_pc;
-            if (_nok == 1'b0) begin
+            if (not_ok == 1'b0) begin
                 id_is <= if_is;
             end else begin
                 id_is <= 32'h0;

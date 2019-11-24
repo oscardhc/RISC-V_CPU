@@ -39,11 +39,10 @@ module risc (
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
 
-    wire[31:0]  id_id_if_pc;
-    wire        id_id_if_pce;
-    wire[31:0]  id_id_if_off;
-    wire[31:0]  if_id_if_pc;
-    wire        if_id_if_pce;
+    wire[31:0]  ex_ex_if_pc;
+    wire        ex_ex_if_pce;
+    wire[31:0]  if_ex_if_pc;
+    wire        if_ex_if_pce;
 
     wire[6:0]   id_t;
     wire[2:0]   id_st;
@@ -54,6 +53,8 @@ module risc (
     wire        id_we;
     wire[31:0]  id_nn;
 
+    wire[31:0]  id_npc;
+
     wire[6:0]   ex_t;
     wire[2:0]   ex_st;
     wire        ex_sst;
@@ -62,6 +63,8 @@ module risc (
     wire[4:0]   ex_wa;
     wire        ex_we;
     wire[31:0]  ex_nn;
+
+    wire[31:0]  ex_npc;
 
     wire[4:0]   ex_wa_o;
     wire        ex_we_o;
@@ -118,8 +121,8 @@ module risc (
         .ok(if_ok),
         .pc(if_pc),
         .is(if_is),
-        .id_if_pc (if_id_if_pc),
-        .id_if_pce(if_id_if_pce),
+        .ex_if_pc (if_ex_if_pc),
+        .ex_if_pce(if_ex_if_pce),
         .not_ok(not_ok),
         .stl(stl_mm)
     );
@@ -146,13 +149,10 @@ module risc (
         .out1(id_n1), .out2(id_n2),
         .wa(id_wa), .we(id_we),
         .outn(id_nn),
+        .npc(id_npc),
 
         .ex_wa(ex_wa_o), .ex_wn(ex_wn_o), .ex_we(ex_we_o),
-        .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o),
-    
-        .id_if_pc (id_id_if_pc),
-        .id_if_pce(id_id_if_pce),
-        .id_if_off(id_id_if_off)
+        .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o)
     );
 
     regfile regfile0 (
@@ -174,12 +174,8 @@ module risc (
         .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we),
         .ex_nn(ex_nn),
 
-        .id_if_pc_i  (id_id_if_pc),
-        .id_if_pce_i (id_id_if_pce),
-        .id_if_off_i (id_id_if_off),
-
-        .id_if_pc_o  (if_id_if_pc),
-        .id_if_pce_o (if_id_if_pce),
+        .id_npc(id_npc),
+        .ex_npc(ex_npc),
 
         .stl_mm(stl_mm)
     );
@@ -192,6 +188,11 @@ module risc (
 
         .wa_o(ex_wa_o), .we_o(ex_we_o), .res(ex_wn_o),
         .nn(ex_nn),
+
+        .npc(ex_npc),
+
+        .ex_if_pc (ex_ex_if_pc),
+        .ex_if_pce(ex_ex_if_pce),
         
         .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)
     );
@@ -202,6 +203,13 @@ module risc (
         .ex_wa(ex_wa_o), .ex_we(ex_we_o), .ex_wn(ex_wn_o),
         .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn),
         
+
+        .ex_if_pc_i  (ex_ex_if_pc),
+        .ex_if_pce_i (ex_ex_if_pce),
+
+        .ex_if_pc_o  (if_ex_if_pc),
+        .ex_if_pce_o (if_ex_if_pce),
+
         .ex_mem_e(ex_mem_e),
         .ex_mem_n(ex_mem_n),
         .mm_mem_e(mm_mem_e),

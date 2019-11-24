@@ -6,8 +6,8 @@ module inf (
     output  reg[31:0]   pc,
     output  reg[31:0]   is,
 
-    input   wire[31:0]  id_if_pc,
-    input   wire        id_if_pce,
+    input   wire[31:0]  ex_if_pc,
+    input   wire        ex_if_pce,
 
     output  reg         not_ok,
     input   wire        stl
@@ -42,13 +42,13 @@ module inf (
             if (ok == 1'b1) begin
                 is      = dt;
                 not_ok  = 1'b0;
-                $display("======== PC %h %h %h %h", pc, id_if_pc, dt, is);
-                if (id_if_pce == 1'b1) begin
-                    pc = id_if_pc;
+                $display("======== PC %h %h %h %h", pc, ex_if_pc, dt, is);
+                if (ex_if_pce == 1'b1) begin
+                    pc = ex_if_pc;
                 end else begin
                     pc = pc + 4;
                 end
-                $display("-------- PC %h %h %h %h", pc, id_if_pc, dt, is);
+                $display("-------- PC %h %h %h %h", pc, ex_if_pc, dt, is);
             end else if (stl == 1'b0) begin
                 not_ok = 1'b1;
             end
