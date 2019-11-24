@@ -10,6 +10,8 @@ module inf (
     input   wire        ex_if_pce,
 
     output  reg         not_ok,
+    input   wire        inv,
+    output  reg         rec,
     input   wire        stl
 );
 
@@ -37,10 +39,26 @@ module inf (
     //     end
     // end
 
+    reg     invalid;
+
+    always @ (inv) begin
+        if (inv == 1) begin
+            rec     = 1;
+            invalid = 1;
+        end else begin
+            rec     = 0;
+        end
+    end
+
     always @ (*) begin
         if (rst == 1'b0) begin
             if (ok == 1'b1) begin
-                is      = dt;
+                if (invalid == 1) begin
+                    is      = {dt[31:1], 1'b0};
+                    invalid = 0;
+                end else begin
+                    is = dt;
+                end
                 not_ok  = 1'b0;
                 $display("======== PC %h %h %h %h", pc, ex_if_pc, dt, is);
                 if (ex_if_pce == 1'b1) begin

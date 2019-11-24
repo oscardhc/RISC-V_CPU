@@ -35,6 +35,9 @@ module id_ex (
     input   wire        stl_mm
 );
 
+    reg[1:0]    inv;
+    
+
     always @ (posedge clk) begin
         if (rst == 1'b1 || id_t == 7'h0) begin
             ex_t    <= 7'h0;

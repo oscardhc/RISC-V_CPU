@@ -20,11 +20,20 @@ module ex (
     output  reg         ex_if_pce,
 
     output  reg[4:0]    ex_mem_e,
-    output  reg[31:0]   ex_mem_n
+    output  reg[31:0]   ex_mem_n,
+
+    output  reg         inv_o,
+    input   wire        rec_i
     // e 0/1: enable(0/1) + length(1/4) + wr(r/w)
 );
 
-    reg[1:0]    next_invalid;
+    reg next_invalid;
+
+    always @ (rec_i) begin
+        if (rec_i == 1) begin
+            inv_o = 0;
+        end
+    end
 
     always @ (*) begin
         if (rst == 1'b1) begin
@@ -37,7 +46,6 @@ module ex (
             ex_if_pce = 1'b0;
             $display("%d t %b st %b sst %b", $time, t, st, sst);
             if (next_invalid > 0) begin
-                next_invalid = 0;
                 ex_mem_e = 4'h0;
                 wa_o = 0;
                 we_o = 0;
@@ -79,7 +87,8 @@ module ex (
                         res = n2;
                         ex_if_pce   = 1'b1;
                         ex_if_pc    = npc;
-                        next_invalid = 2;
+                        // next_invalid = 1;
+                        inv_o = 1;
                     end
                     7'b1100111: begin
                         case (st)
@@ -87,7 +96,8 @@ module ex (
                                 res = n2;
                                 ex_if_pce   = 1'b1;
                                 ex_if_pc    = npc;
-                                next_invalid = 2;
+                                // next_invalid = 1;
+                                inv_o = 1;
                             end
                         endcase
                     end

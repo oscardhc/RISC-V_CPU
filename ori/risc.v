@@ -64,6 +64,9 @@ module risc (
     wire        ex_we;
     wire[31:0]  ex_nn;
 
+    wire        ex_if_inv;
+    wire        ex_if_rec;
+
     wire[31:0]  ex_npc;
 
     wire[4:0]   ex_wa_o;
@@ -124,6 +127,8 @@ module risc (
         .ex_if_pc (if_ex_if_pc),
         .ex_if_pce(if_ex_if_pce),
         .not_ok(not_ok),
+        .inv(ex_if_inv),
+        .rec(ex_if_rec),
         .stl(stl_mm)
     );
 
@@ -193,6 +198,9 @@ module risc (
 
         .ex_if_pc (ex_ex_if_pc),
         .ex_if_pce(ex_ex_if_pce),
+
+        .inv_o(ex_if_inv),
+        .rec_i(ex_if_rec),
         
         .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)
     );
