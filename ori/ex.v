@@ -27,12 +27,19 @@ module ex (
     // e 0/1: enable(0/1) + length(1/4) + wr(r/w)
 );
 
-    reg next_invalid;
+    reg     next_invalid;
 
     always @ (rec_i) begin
         if (rec_i == 1) begin
             inv_o = 0;
         end
+    end
+
+    `define JUMP begin \
+        ex_if_pce   = 1'b1; \
+        ex_if_pc    = npc; \
+        next_invalid = 1; \
+        inv_o = 1; \
     end
 
     always @ (*) begin
@@ -49,6 +56,9 @@ module ex (
                 ex_mem_e = 4'h0;
                 wa_o = 0;
                 we_o = 0;
+                if (t[0] == 0) begin
+                    next_invalid = 0;
+                end
             end else begin
                 ex_mem_e = 4'h0;
                 wa_o = wa;
@@ -85,20 +95,29 @@ module ex (
                     end
                     7'b1101111: begin
                         res = n2;
-                        ex_if_pce   = 1'b1;
-                        ex_if_pc    = npc;
+                        // ex_if_pce   = 1'b1;
+                        // ex_if_pc    = npc;
                         // next_invalid = 1;
-                        inv_o = 1;
+                        // inv_o = 1;
+                        `JUMP
                     end
                     7'b1100111: begin
+                        res = n2;
+                        // ex_if_pce   = 1'b1;
+                        // ex_if_pc    = npc;
+                        // next_invalid = 1;
+                        // inv_o = 1;
+                        `JUMP
+                    end
+                    7'b1100011: begin
+                        res = 0;
                         case (st)
-                            3'b000: begin
-                                res = n2;
-                                ex_if_pce   = 1'b1;
-                                ex_if_pc    = npc;
-                                // next_invalid = 1;
-                                inv_o = 1;
-                            end
+                            3'b000: if ( (n1 == n2)) `JUMP
+                            3'b001: if (!(n1 == n2)) `JUMP
+                            3'b100: if ( ($signed(n1) < $signed(n2))) `JUMP
+                            3'b101: if (!($signed(n1) < $signed(n2))) `JUMP
+                            3'b110: if ( (n1 < n2)) `JUMP
+                            3'b111: if (!(n1 < n2)) `JUMP
                         endcase
                     end
                     7'b0100011: begin

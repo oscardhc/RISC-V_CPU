@@ -95,14 +95,17 @@ module id(
                 end
                 // JALR
                 7'b1100111: begin
-                    case(st)
-                        3'b000: begin
-                            we  = 1'b1;
-                            re1 = 1'b1;
-                            re2 = 1'b0;
-                            imm = pc;
-                        end
-                    endcase
+                    we  = 1'b1;
+                    re1 = 1'b1;
+                    re2 = 1'b0;
+                    imm = pc;
+                end
+                // BRANCH
+                7'b1100011: begin
+                    we  = 1'b0;
+                    re1 = 1'b1;
+                    re2 = 1'b1;
+                    npc = pc - 32'h4 + {{20{is[31]}}, is[7], is[30:25], is[11:8], 1'b0};
                 end
                 7'b0100011: begin
                     we  = 1'b0;
@@ -147,7 +150,7 @@ module id(
     // end
 
     always @ (out1) begin
-        if (rst == 1'b0 && t == 7'b1100111 && st == 3'h000) begin
+        if (rst == 1'b0 && t == 7'b1100111) begin
             npc = out1 + {{21{is[31]}}, is[30:20]};
         end
     end
