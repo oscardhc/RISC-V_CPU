@@ -136,6 +136,7 @@ module id(
                     we  = 1'b0;
                     re1 = 1'b0;
                     re2 = 1'b0;
+                    imm = 32'h0;
                 end
             endcase
         end

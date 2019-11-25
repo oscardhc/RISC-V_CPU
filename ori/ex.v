@@ -85,6 +85,7 @@ module ex (
                                             1'b0: res = n1 + n2;
                                             1'b1: res = n1 - n2;
                                         endcase
+                                    default: res = 32'h0;
                                 endcase
                             end
                             3'b001: res = (n1 << n2);
@@ -104,18 +105,10 @@ module ex (
                     end
                     7'b1101111: begin
                         res = n2;
-                        // ex_if_pce   = 1'b1;
-                        // ex_if_pc    = npc;
-                        // next_invalid = 1;
-                        // inv_o = 1;
                         `JUMP
                     end
                     7'b1100111: begin
                         res = n2;
-                        // ex_if_pce   = 1'b1;
-                        // ex_if_pc    = npc;
-                        // next_invalid = 1;
-                        // inv_o = 1;
                         `JUMP
                     end
                     7'b1100011: begin
@@ -136,6 +129,7 @@ module ex (
                             3'b000: ex_mem_e = {1'b1, 2'h0, 1'b1, 1'b0};
                             3'b001: ex_mem_e = {1'b1, 2'h1, 1'b1, 1'b0};
                             3'b010: ex_mem_e = {1'b1, 2'h3, 1'b1, 1'b0};
+                            default: ex_mem_e = 5'h0;
                         endcase
                     end
                     7'b0000011: begin
@@ -147,6 +141,7 @@ module ex (
                             3'b010: ex_mem_e = {1'b1, 2'h3, 1'b0, 1'b0};
                             3'b100: ex_mem_e = {1'b1, 2'h0, 1'b0, 1'b1};
                             3'b101: ex_mem_e = {1'b1, 2'h1, 1'b0, 1'b1};
+                            default: ex_mem_e = 5'h0;
                         endcase
                     end
                     default: begin
