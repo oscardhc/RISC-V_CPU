@@ -29,7 +29,7 @@ module ex_mm (
             mm_we <= 1'h0;
             mm_wn <= 32'h0;
         end else if (stl_mm != 1'b1) begin
-            $display("ex_wn %d", ex_wn);
+            // $display("ex_wn %d", ex_wn);
             mm_wa <= ex_wa;
             mm_we <= ex_we;
             mm_wn <= ex_wn;

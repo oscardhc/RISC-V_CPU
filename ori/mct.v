@@ -46,7 +46,7 @@ module mct (
     if (rst == 1'b0) begin
       if (mm_e != ls_mm_e || if_a != ls_if_a) begin
         if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-          // $display("MAYBE CHANGE %b", mm_e);
+          // // $display("MAYBE CHANGE %b", mm_e);
           if (mm_e == 1'b1) begin
             cur_mode <= 1;
             if (ad != mm_a) begin
@@ -89,7 +89,7 @@ module mct (
 
   always @ (negedge clk) begin
     if (rst == 1'b0) begin
-      $display("\t\t\t MCT ad %h", ad);
+      // $display("\t\t\t MCT ad %h", ad);
       if (nready == 1) begin
         nready <= 0;
       end else if (cur_mode == 1'b1) begin
@@ -171,7 +171,7 @@ module mct (
 
   // always @ (if_a) begin
   // 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-  // 		// $display("MAYBE CHANGE %b", mm_e);
+  // 		// // $display("MAYBE CHANGE %b", mm_e);
   // 		if (mm_e == 1'b1) begin
   // 			cur_mode = 1;
   // 			if (ad != mm_a) begin
@@ -183,7 +183,7 @@ module mct (
   // 		end else begin
   // 			cur_mode = 0;
   // 			if (ad != if_a) begin
-  // 				$display("??????? %h %h", ad, if_a);
+  // 				// $display("??????? %h %h", ad, if_a);
   // 				ad = if_a;
   // 				nready = 1;
   // 			end
@@ -196,7 +196,7 @@ module mct (
 
   // always @ (posedge mm_e) begin
   // 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-  // 		$display("MAYBE CHANGE %d %b", $time, mm_e);
+  // 		// $display("MAYBE CHANGE %d %b", $time, mm_e);
   // 		if (mm_e == 1'b1) begin
   // 			cur_mode = 1;
   // 			if (ad != mm_a) begin
@@ -220,7 +220,7 @@ module mct (
 
   // always @ (negedge mm_e) begin
   // 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-  // 		$display("MAYBE CHANGE %d %b", $time, mm_e);
+  // 		// $display("MAYBE CHANGE %d %b", $time, mm_e);
   // 		if (mm_e == 1'b1) begin
   // 			cur_mode = 1;
   // 			if (ad != mm_a) begin
@@ -244,7 +244,7 @@ module mct (
 
   // always @ (if_a, mm_e) begin
   // 	if (if_ok == 1'b1 || mm_ok == 1'b1) begin
-  // 		// $display("MAYBE CHANGE %b", mm_e);
+  // 		// // $display("MAYBE CHANGE %b", mm_e);
   // 		if (mm_e == 1'b1) begin
   // 			cur_mode = 1;
   // 			ad = mm_a;

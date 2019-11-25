@@ -45,7 +45,7 @@ module mm (
             we_o = we;
             wa_o = wa;
             if (mm_mem_e[4] != 1'b0) begin
-                $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
+                // $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
                 case (mm_mem_e[1])
                     1'b0: begin
                         if (mm_mct_ok == 1'b1) begin
@@ -71,7 +71,7 @@ module mm (
                         end
                     end
                     1'b1: begin
-                        $display("<><><><><><><><><><> %d %d", mm_mem_n, wn);
+                        // $display("<><><><><><><><><><> %d %d", mm_mem_n, wn);
                         if (mm_mct_ok == 1'b1) begin
                             stl      = 1'b0;
                             mm_mct_e = 1'b0;
@@ -96,11 +96,11 @@ module mm (
     //         we_o <= we;
     //         wa_o <= wa;
     //         if (mm_mem_e[3] != 1'b0) begin
-    //             $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
+    //             // $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
     //             case (mm_mem_e[0])
     //                 1'b0: begin
     //                     if (mm_mct_ok == 1'b1) begin
-    //                         $display("!!!!!!!!!!!!!!!!!!!! %d MM OK!", $time);
+    //                         // $display("!!!!!!!!!!!!!!!!!!!! %d MM OK!", $time);
     //                         stl      <= 1'b0;
     //                         mm_mct_e <= 1'b0;
     //                         case (mm_mct_cu)
@@ -109,7 +109,7 @@ module mm (
     //                             2'h3: wn_o <= {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
     //                         endcase
     //                     end else begin
-    //                         $display("!!!!!!!!!!!!!!!!!!!! %d MM NOT OK!", $time);
+    //                         // $display("!!!!!!!!!!!!!!!!!!!! %d MM NOT OK!", $time);
     //                         mm_mct_cu   <= mm_mem_e[2:1];
     //                         stl         <= 1'b1;
     //                         mm_mct_a    <= wn;
@@ -118,7 +118,7 @@ module mm (
     //                     end
     //                 end
     //                 1'b1: begin
-    //                     $display("????????????? NOT POSSIBLE!");
+    //                     // $display("????????????? NOT POSSIBLE!");
     //                 end
     //             endcase
     //         end else begin

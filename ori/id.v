@@ -63,7 +63,7 @@ module id(
             ra2 = is[24:20];
             wa  = is[11:7];
 
-            $display("id %h", is);
+            // $display("id %h", is);
 
             imm = 32'h00000000;
 

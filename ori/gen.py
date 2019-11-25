@@ -118,6 +118,26 @@ with open(name + '.code', 'r') as fin:
                     o += pb(0b001, 3)
                     o += pb(int(a[2])&31, 5)
                     o += pb(0b0100011, 7)
+            elif a[0] == "BLT":
+                if (int(a[3]) >= 0):
+                    o += pb(0, 7)
+                    o += pb(int(a[2][1:]), 5)
+                    o += pb(int(a[1][1:]), 5)
+                    o += pb(0b100, 3)
+                    o += pb(int(a[3]), 5)
+                    o += pb(0b1100011, 7)
+            elif a[0] == "BGE":
+                if (int(a[3]) >= 0):
+                    o += pb(0, 7)
+                    o += pb(int(a[2][1:]), 5)
+                    o += pb(int(a[1][1:]), 5)
+                    o += pb(0b101, 3)
+                    o += pb(int(a[3]), 5)
+                    o += pb(0b1100011, 7)
+            elif a[0] == "LUI":
+                o += pb(int(a[2]), 20)
+                o += pb(int(a[1][1:]), 5)
+                o += pb(0b0110111, 7)
             print(len(o), o, str(hex(toi(o)))[2:])
             o = o[::-1]
             # print('32\'h' + str(hex(cc*4))[2:], ': rn_o <= 32\'h' + str(hex(toi(o)))[2:] + ';', file=f)

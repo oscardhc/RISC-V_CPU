@@ -43,39 +43,48 @@ module ex (
     end
 
     always @ (*) begin
+        res = 32'h0;
+        ex_mem_e = 4'h0;
+        wa_o = 0;
+        we_o = 0;
         if (rst == 1'b1) begin
             res = 32'h0;
-            ex_mem_e = 4'h0;
+            // ex_mem_e = 4'h0;
             ex_if_pce = 1'b0;
-            wa_o = 0;
-            we_o = 0;
+            // wa_o = 0;
+            // we_o = 0;
         end else if (t != 0) begin
-            ex_if_pce = 1'b0;
-            $display("%d t %b st %b sst %b", $time, t, st, sst);
+            // wa_o = 0;
+            // we_o = 0;
+            // ex_mem_e = 4'h0;
+            // $display("%d t %b st %b sst %b", $time, t, st, sst);
             if (next_invalid > 0) begin
-                ex_mem_e = 4'h0;
-                wa_o = 0;
-                we_o = 0;
+                ex_if_pce = 1'b0;
                 if (t[0] == 0) begin
                     next_invalid = 0;
                 end
             end else begin
-                ex_mem_e = 4'h0;
+                ex_if_pce = 1'b0;
                 wa_o = wa;
                 we_o = we;
                 case (t)
                     7'b0110111: begin
-                        
+                        res = n2;
                     end
                     7'b0010111: begin
-                        res = n1 + n2;
+                        res = n2;
                     end
                     7'b0010011, 7'b0110011: begin
                         case (st)
                             3'b000: begin 
-                                case (sst)
-                                    1'b0: res = n1 + n2;
-                                    1'b1: res = n1 - n2;
+                                case (t)
+                                    7'b0010011:
+                                        res = n1 + n2;
+                                    7'b0110011:
+                                        case (sst)
+                                            1'b0: res = n1 + n2;
+                                            1'b1: res = n1 - n2;
+                                        endcase
                                 endcase
                             end
                             3'b001: res = (n1 << n2);
@@ -149,7 +158,7 @@ module ex (
     end
 
     // always @ (*) begin
-    //     // $display("?????????? %d", res);
+    //     // // $display("?????????? %d", res);
     //     wa_o = wa;
     //     we_o = we;
     //     case (t)

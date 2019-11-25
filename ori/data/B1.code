@@ -1,5 +1,5 @@
-LW x2, 16, x0
-LW x1, 20, x0
+LUI x1, 233
+LUI x2, 123
 BLT x1, x2, 8
 BGE x1, x2, 8
 ORI x3, x1, 99

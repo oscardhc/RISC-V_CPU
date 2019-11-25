@@ -49,7 +49,7 @@ module id_ex (
             ex_we   <= 1'h0;
             ex_npc  <= 0;
         end else if (stl_mm != 1'b1) begin
-            $display("[%d] - id %d %d", $time, id_n1, id_n2);
+            // $display("[%d] - id %d %d", $time, id_n1, id_n2);
             ex_t    <= id_t;
             ex_st   <= id_st;
             ex_sst  <= id_sst;
