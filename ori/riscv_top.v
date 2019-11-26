@@ -30,7 +30,7 @@ assign clk = EXCLK;
 
 always @(posedge clk or posedge btnC)
 begin
-	if (btnC)
+if (btnC)
 	begin
 		rst			<=	1'b1;
 		rst_delay	<=	1'b1;

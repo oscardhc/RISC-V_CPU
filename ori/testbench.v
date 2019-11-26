@@ -3,7 +3,7 @@
 
 // `include "riscv_top.v"
 
-`timescale 100ps/1ps
+`timescale 1ns/1ps
 
 module testbench;
 
@@ -21,8 +21,9 @@ riscv_top #(.SIM(1)) top(
 initial begin
   clk=0;
   rst=1;
-  repeat(3) #1 clk=!clk;
+  repeat(4) #1 clk=!clk;
   rst=0; 
+  // repeat(100) #1 begin
   forever #1 begin
     clk=!clk;
   end

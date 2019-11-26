@@ -94,7 +94,7 @@ initial begin
     ram[i] = 0;
   end
   $readmemh("test.data", ram); // add test.data to vivado project or specify a valid file path
-  // $display("ram %h %h %h %h", ram[0], ram[1], ram[2], ram[3]);
+  $display("ram %h %h %h %h", ram[0], ram[1], ram[2], ram[3]);
 end
 
 endmodule
