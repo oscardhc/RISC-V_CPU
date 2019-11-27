@@ -11,8 +11,6 @@ module if_id(
     input   wire        not_ok
 );
 
-    reg     _nok;
-
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
             id_pc <= 32'h00000000;
@@ -25,7 +23,6 @@ module if_id(
                 id_is <= 32'h0;
             end
         end
-        _nok <= not_ok;
     end
 
 endmodule

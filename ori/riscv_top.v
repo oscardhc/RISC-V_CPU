@@ -3,6 +3,7 @@
 
 // `include "risc.v"
 // `include "ram.v"
+// `include "hci.v"
 
 module riscv_top
 #(

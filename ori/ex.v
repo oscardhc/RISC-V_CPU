@@ -28,12 +28,13 @@ module ex (
 );
 
     reg     next_invalid;
+    reg     reced;
 
-    always @ (rec_i) begin
-        if (rec_i == 1) begin
-            inv_o = 0;
-        end
-    end
+    // always @ (rec_i) begin
+    //     if (rec_i == 1) begin
+    //         inv_o = 0;
+    //     end
+    // end
 
     `define JUMP begin \
         ex_if_pce   = 1'b1; \
@@ -43,6 +44,11 @@ module ex (
     end
 
     always @ (*) begin
+        // $display("> %d TRIGGER %d %d %d", $time, rec_i, inv_o, ex_if_pce);
+        if (rec_i == 1 && inv_o == 1) begin
+            inv_o = 0;
+            reced = 1;
+        end else if (reced == 0) begin
         res = 32'h0;
         ex_mem_e = 4'h0;
         wa_o = 0;
@@ -51,10 +57,6 @@ module ex (
             res = 32'h0;
             ex_if_pce = 1'b0;
         end else if (t != 0) begin
-            // wa_o = 0;
-            // we_o = 0;
-            // ex_mem_e = 4'h0;
-            // $display("%d t %b st %b sst %b", $time, t, st, sst);
             if (next_invalid > 0) begin
                 ex_if_pce = 1'b0;
                 if (t[0] == 0) begin
@@ -150,22 +152,10 @@ module ex (
                 endcase
             end
         end
+    end else begin
+        reced = 0;
     end
-
-    // always @ (*) begin
-    //     // // $display("?????????? %d", res);
-    //     wa_o = wa;
-    //     we_o = we;
-    //     case (t)
-    //         7'b0010011: wn_o = res;
-    //         7'b1101111: wn_o = res;
-    //         7'b1100111: wn_o = res;
-    //         7'b0100011: wn_o = res;
-    //         7'b0000011: wn_o = res;
-    //         default: begin
-    //             wn_o = 32'h0;
-    //         end
-    //     endcase
-    // end
+    // $display("< %d TRIGGER %d %d %d", $time, rec_i, inv_o, ex_if_pce);
+    end
 
 endmodule
