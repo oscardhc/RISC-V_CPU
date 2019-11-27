@@ -15,30 +15,6 @@ module inf (
     input   wire        stl
 );
 
-    always @ (*) begin
-        if (rst == 1'b1) begin
-            pc = 32'h0;
-            is = 32'h0;
-        end
-    end
-
-    // always @ (posedge clk) begin
-    //     was_taken <= is_taken;
-    //     if (rst == 1'b0) begin
-    //         if (ok == 1'b1) begin
-    //             is  <= dt;
-    //             // $display("======== PC %h %h %h %h", pc, id_if_pc, dt, is);
-    //             if (id_if_pce == 1'b1) begin
-    //                 pc <= id_if_pc;
-    //             end else begin
-    //                 pc <= pc + 4;
-    //             end
-    //             // $display("-------- PC %h %h %h %h", pc, id_if_pc, dt, is);
-    //         end else if (is_taken == 1) begin
-    //         end
-    //     end
-    // end
-
     reg     invalid;
 
     always @ (inv) begin
@@ -51,7 +27,10 @@ module inf (
     end
 
     always @ (*) begin
-        if (rst == 1'b0) begin
+        if (rst == 1'b1) begin
+            pc = 32'h0;
+            is = 32'h0;
+        end else begin
             if (ok == 1'b1) begin
                 if (invalid == 1) begin
                     is      = {dt[31:2], 2'b10};
@@ -59,16 +38,21 @@ module inf (
                 end else begin
                     is = dt;
                 end
-                not_ok  = 1'b0;
-                // $display("======== PC %h %h %h %h", pc, ex_if_pc, dt, is);
                 if (ex_if_pce == 1'b1) begin
                     pc = ex_if_pc;
                 end else begin
                     pc = pc + 4;
                 end
-                // $display("-------- PC %h %h %h %h", pc, ex_if_pc, dt, is);
-            end else if (stl == 1'b0) begin
-                not_ok = 1'b1;
+            end
+        end
+    end
+
+    always @ (posedge clk) begin
+        if (rst == 1'b0) begin
+            if (ok == 1'b1) begin
+                not_ok <= 0;
+            end else if (stl == 0) begin
+                not_ok <= 1;
             end
         end
     end

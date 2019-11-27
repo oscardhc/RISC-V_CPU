@@ -25,14 +25,10 @@ module regfile(
             r[3] <= 32'h0;
             r[4] <= 32'h0;
             r[5] <= 32'h0;
-        end
-        r[0] <= 32'h0;
-    end
-
-    always @ (posedge clk) begin
-        if (rst == 1'b0 && we == 1'b1 && wa != 5'b00000) begin
+        end else if (we == 1'b1 && wa != 5'b00000) begin
             r[wa] <= wn;
         end
+        r[0] <= 32'h0;
     end
 
     always @ (*) begin

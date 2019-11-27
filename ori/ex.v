@@ -49,10 +49,7 @@ module ex (
         we_o = 0;
         if (rst == 1'b1) begin
             res = 32'h0;
-            // ex_mem_e = 4'h0;
             ex_if_pce = 1'b0;
-            // wa_o = 0;
-            // we_o = 0;
         end else if (t != 0) begin
             // wa_o = 0;
             // we_o = 0;
@@ -109,7 +106,10 @@ module ex (
                     end
                     7'b1100111: begin
                         res = n2;
-                        `JUMP
+                        ex_if_pce   = 1'b1;
+                        ex_if_pc    = npc + n1;
+                        next_invalid = 1;
+                        inv_o = 1;
                     end
                     7'b1100011: begin
                         res = 0;

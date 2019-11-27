@@ -37,11 +37,7 @@ module mm (
             mm_mct_wr   = 0;
             mm_mct_cu   = 0;
             mm_mct_e    = 0;
-        end
-    end
-
-    always @ (*) begin
-        if (rst == 1'b0) begin
+        end else begin
             we_o = we;
             wa_o = wa;
             if (mm_mem_e[4] != 1'b0) begin

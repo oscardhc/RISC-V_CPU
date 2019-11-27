@@ -17,15 +17,15 @@ module if_id(
         if (rst == 1'b1) begin
             id_pc <= 32'h00000000;
             id_is <= 32'h00000000;
-        end else begin
+        end else if (stl_mm == 1'b0) begin
             id_pc <= if_pc;
             if (not_ok == 1'b0) begin
                 id_is <= if_is;
             end else begin
                 id_is <= 32'h0;
             end
-            _nok <= not_ok;
         end
+        _nok <= not_ok;
     end
 
 endmodule

@@ -48,8 +48,6 @@ module id(
             t   = 6'h0;
             st  = 3'h0;
             sst = 1'h0;
-            out1    = 32'h0;
-            out2    = 32'h0;
             wa  = 5'h0;
             we  = 1'h0;
 
@@ -63,6 +61,8 @@ module id(
             ra2 = is[24:20];
             wa  = is[11:7];
 
+            // out1 = 0;
+            // out2 = 0;
             // $display("id %h", is);
 
             imm = 32'h00000000;
@@ -99,6 +99,7 @@ module id(
                     re1 = 1'b1;
                     re2 = 1'b0;
                     imm = pc;
+                    npc = {{21{is[31]}}, is[30:20]};
                 end
                 // BRANCH
                 7'b1100011: begin
@@ -149,12 +150,6 @@ module id(
     //         id_if_off = out1;
     //     end
     // end
-
-    always @ (out1) begin
-        if (rst == 1'b0 && t == 7'b1100111) begin
-            npc = out1 + {{21{is[31]}}, is[30:20]};
-        end
-    end
 
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin

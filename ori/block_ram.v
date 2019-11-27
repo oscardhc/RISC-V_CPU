@@ -82,7 +82,7 @@ always @(posedge clk)
       ram[addr_a] <= din_a;
     end
     q_addr_a <= addr_a;
-    // $display("%d (%h %h %h %h)", $time, ram[35], ram[34], ram[33], ram[32]);
+    // $display("%d (%h %h %h %h %h %h %h %h)", $time, ram[37], ram[36], ram[35], ram[34], ram[33], ram[32], ram[31], ram[30]);
   end
 
 assign dout_a = ram[q_addr_a];
