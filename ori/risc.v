@@ -23,7 +23,7 @@ module risc (
     wire        not_ok;
 
     wire[31:0]  if_mct_rn;
-    wire        if_ok;
+    wire[1:0]   if_ok;
 
     wire        mm_e;
     wire[31:0]  mm_a;
@@ -39,10 +39,8 @@ module risc (
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
 
-    wire[31:0]  ex_ex_if_pc;
-    wire        ex_ex_if_pce;
-    wire[31:0]  if_ex_if_pc;
-    wire        if_ex_if_pce;
+    wire[31:0]  ex_if_pc;
+    wire        ex_if_pce;
 
     wire[6:0]   id_t;
     wire[2:0]   id_st;
@@ -124,9 +122,9 @@ module risc (
         .ok(if_ok),
         .pc(if_pc),
         .is(if_is),
-        .ex_if_pc (if_ex_if_pc),
-        .ex_if_pce(if_ex_if_pce),
-        .not_ok(not_ok),
+        .ex_if_pc (ex_if_pc),
+        .ex_if_pce(ex_if_pce),
+        // .not_ok(not_ok),
         .inv(ex_if_inv),
         .rec(ex_if_rec),
         .stl(stl_mm)
@@ -139,7 +137,7 @@ module risc (
         .id_pc(id_pc),
         .id_is(id_is),
         .stl_mm(stl_mm),
-        .not_ok(not_ok)
+        .mmif_ok(if_ok)
     );
 
     id id0 (
@@ -196,8 +194,8 @@ module risc (
 
         .npc(ex_npc),
 
-        .ex_if_pc (ex_ex_if_pc),
-        .ex_if_pce(ex_ex_if_pce),
+        .ex_if_pc (ex_if_pc),
+        .ex_if_pce(ex_if_pce),
 
         .inv_o(ex_if_inv),
         .rec_i(ex_if_rec),
@@ -211,13 +209,6 @@ module risc (
         .ex_wa(ex_wa_o), .ex_we(ex_we_o), .ex_wn(ex_wn_o),
         .mm_wa(mm_wa), .mm_we(mm_we), .mm_wn(mm_wn),
         
-
-        .ex_if_pc_i  (ex_ex_if_pc),
-        .ex_if_pce_i (ex_ex_if_pce),
-
-        .ex_if_pc_o  (if_ex_if_pc),
-        .ex_if_pce_o (if_ex_if_pce),
-
         .ex_mem_e(ex_mem_e),
         .ex_mem_n(ex_mem_n),
         .mm_mem_e(mm_mem_e),

@@ -46,9 +46,11 @@ module ex (
     always @ (*) begin
         // $display("> %d TRIGGER %d %d %d", $time, rec_i, inv_o, ex_if_pce);
         if (rec_i == 1 && inv_o == 1) begin
-            inv_o = 0;
-            reced = 1;
+            inv_o       = 0;
+            ex_if_pce   = 0;
+            reced       = 1;
         end else if (reced == 0) begin
+
         res = 32'h0;
         ex_mem_e = 4'h0;
         wa_o = 0;
@@ -104,6 +106,7 @@ module ex (
                     end
                     7'b1101111: begin
                         res = n2;
+                        // $display("jump !!!!!! %d", npc);
                         `JUMP
                     end
                     7'b1100111: begin

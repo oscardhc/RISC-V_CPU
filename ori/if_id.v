@@ -7,8 +7,7 @@ module if_id(
     output  reg[31:0]  id_is,
 
     input   wire        stl_mm,
-
-    input   wire        not_ok
+    input   wire[1:0]   mmif_ok
 );
 
     always @ (posedge clk) begin
@@ -17,11 +16,13 @@ module if_id(
             id_is <= 32'h00000000;
         end else if (stl_mm == 1'b0) begin
             id_pc <= if_pc;
-            if (not_ok == 1'b0) begin
+            if (mmif_ok != 1'b0) begin
                 id_is <= if_is;
             end else begin
                 id_is <= 32'h0;
             end
+        end else begin
+            // id_is <= 32'h0;
         end
     end
 

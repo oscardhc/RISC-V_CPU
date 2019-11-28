@@ -1,0 +1,5 @@
+ADDI x1, x0, 4
+ADD x1, x1, x1
+ADD x2, x1, x1
+JAL x4, -8
+ADDI x4, x3, 64

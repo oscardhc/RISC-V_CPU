@@ -3,7 +3,7 @@
 
 // `include "riscv_top.v"
 
-`timescale 1ns/1ps
+// `timescale 1ns/1ps
 
 module testbench;
 
@@ -23,7 +23,7 @@ initial begin
   rst=1;
   repeat(4) #1 clk=!clk;
   rst=0; 
-  // repeat(100) #1 begin
+  // repeat(10000) #1 begin
   forever #1 begin
     clk=!clk;
   end

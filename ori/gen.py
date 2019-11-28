@@ -34,6 +34,13 @@ with open(name + '.code', 'r') as fin:
                 o += pb(0b000, 3)
                 o += pb(int(a[1][1:]), 5)
                 o += pb(0b0010011, 7)
+            elif a[0] == "ADD":
+                o += pb(0, 7)
+                o += pb(int(a[3][1:]), 5)
+                o += pb(int(a[2][1:]), 5)
+                o += pb(0, 3)
+                o += pb(int(a[1][1:]), 5)
+                o += pb(0b0110011, 7)
             elif a[0] == "ORI":
                 o += pb(eval(a[3]), 12)
                 o += pb(eval(a[2][1:]), 5)

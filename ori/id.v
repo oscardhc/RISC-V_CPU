@@ -36,11 +36,11 @@ module id(
 );
 
     reg[31:0]   imm;
-    reg         vld;
 
     always @ (*) begin
 
         if (rst == 1'b1 || is == 32'h0) begin
+
             re1 = 1'b0;
             re2 = 1'b0;
             ra1 = 5'h0;
@@ -154,11 +154,12 @@ module id(
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
             out1 = 32'h0;
-        end else if (re1 == 1'b1 && ex_wa == ra1 && ex_wa == 1'b1) begin
+        end else if (re1 == 1'b1 && ex_wa == ra1 && ex_we == 1'b1) begin
             out1 = ex_wn;
         end else if (re1 == 1'b1 && mm_wa == ra1 && mm_we == 1'b1) begin
             out1 = mm_wn;
         end else if (re1 == 1'b1) begin
+            // $display("[%d] RA %d %d", $time, ra1, rn1);
             out1 = rn1;
         end else if (re1 == 1'b0) begin
             out1 = imm;

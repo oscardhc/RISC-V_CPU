@@ -1,0 +1,6 @@
+ADDI x1, x1, 233
+SW x1, 32, x0
+SW x1, 36, x0
+LW x2, 36, x0
+LW x3, 32, x0
+JAL x4, -20

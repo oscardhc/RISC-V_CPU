@@ -1,0 +1,6 @@
+ORI x1, x0, 233
+LW x2, 0, x0
+ADDI x3, x2, 1
+ADDI x2, x3, 1
+JAL x4, -12
+JAL x4, -12

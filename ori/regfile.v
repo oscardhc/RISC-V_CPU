@@ -33,10 +33,13 @@ module regfile(
 
     always @ (*) begin
         if (rst == 1'b0 && re1 == 1'b1) begin
-            if (ra1 == wa) begin
+            if (we == 1 && ra1 == wa) begin
+                // $display("  <%d> LLLLLUCKY %d %d %d", $time, ra1, r[ra1], rn1);
                 rn1 = wn;
             end else begin
+                // $display("- <%d> RA %d %d %d", $time, ra1, r[ra1], rn1);
                 rn1 = r[ra1];
+                // $display("+ <%d> RA %d %d %d", $time, ra1, r[ra1], rn1);
             end
         end else begin
             rn1 = 32'h00000000;
@@ -45,7 +48,7 @@ module regfile(
 
     always @ (*) begin
         if (rst == 1'b0 && re2 == 1'b1) begin
-            if (ra2 == wa) begin
+            if (we == 1 && ra2 == wa) begin
                 rn2 = wn;
             end else begin
                 rn2 = r[ra2];
