@@ -28,7 +28,8 @@ module mct (
   reg[31:0] ca;
   reg       done;
 
-  reg[7 + 1 + 32:0] cache[255:0];
+`define ICACHE_SIZE 8
+  reg[15 - `ICACHE_SIZE + 1 + 32:0] cache[2 ** `ICACHE_SIZE - 1:0];
   reg       lst_cache;
 
   always @ (posedge clk) begin
@@ -145,7 +146,8 @@ module mct (
             if_ok <= 1;
             if_n  <= ca;
             done  <= 0;
-            cache[(if_a >> 2) & 255] = {ls_if_a[16: 10], 1'h1, ca};
+            cache[(ls_if_a >> 2) & (2 ** `ICACHE_SIZE - 1)] = {ls_if_a[16: 18 - `ICACHE_SIZE], 1'h1, ca};
+            if (ca[6:0] == 7'b0000011) lst_cache <= 1;
           end
           case (cu)
             2'h0: begin
@@ -174,13 +176,13 @@ module mct (
           end
         end else begin
           // $display("IF SET! %d %d %d", $time, ad, if_a);
-          if (lst_cache == 0 && cache[(if_a >> 2) & 255][39:33] == if_a[16: 10] && cache[(if_a >> 2) & 255][32] == 1) begin
+          if (lst_cache == 0 && cache[(if_a >> 2) & (2 ** `ICACHE_SIZE - 1)][47 - `ICACHE_SIZE:33] == if_a[16: 18 - `ICACHE_SIZE] && cache[(if_a >> 2) & (2 ** `ICACHE_SIZE - 1)][32] == 1) begin
             if (if_ok == 1) if_ok <= 2;
             else            if_ok <= 1;
-            if_n      <= cache[(if_a >> 2) & 255][31:0];
+            if_n      <= cache[(if_a >> 2) & (2 ** `ICACHE_SIZE - 1)][31:0];
             ls_if_a   <= 0;
             ad        <= 0;
-            if (cache[(if_a >> 2) & 255][6:0] == 7'b0000011) lst_cache <= 1;
+            if (cache[(if_a >> 2) & (2 ** `ICACHE_SIZE - 1)][6:0] == 7'b0000011) lst_cache <= 1;
             // $display("%d CACHE HIT!!  %h %h", $time, if_a, cache[(if_a >> 2) & 63][31:0]);
           end else begin
             lst_cache <= 0;
@@ -199,7 +201,8 @@ module mct (
                   if_ok <= 1;
                   if_n  <= ca;
                   done  <= 0;
-                  cache[(if_a >> 2) & 255] = {ls_if_a[16: 10], 1'h1, ca};
+                  cache[(ls_if_a >> 2) & (2 ** `ICACHE_SIZE - 1)] = {ls_if_a[16: 18 - `ICACHE_SIZE], 1'h1, ca};
+                  if (ca[6:0] == 7'b0000011) lst_cache <= 1;
                 end
                 case (cu)
                   2'h0: begin
@@ -306,7 +309,8 @@ module mct (
             if_ok <= 1;
             if_n  <= ca;
             done  <= 0;
-            cache[(if_a >> 2) & 255] = {ls_if_a[16: 10], 1'h1, ca};
+            cache[(ls_if_a >> 2) & (2 ** `ICACHE_SIZE - 1)] = {ls_if_a[16: 18 - `ICACHE_SIZE], 1'h1, ca};
+            if (ca[6:0] == 7'b0000011) lst_cache <= 1;
           end
           case (cu)
             2'h0: begin
