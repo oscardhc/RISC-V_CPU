@@ -24,6 +24,7 @@ module risc (
 
     wire[31:0]  if_mct_rn;
     wire[1:0]   if_ok;
+    wire        cache_hit;
 
     wire        mm_e;
     wire[31:0]  mm_a;
@@ -113,6 +114,7 @@ module risc (
         .mm_a(mm_a),
         .mm_ok(mm_ok),
         .mm_e(mm_e),
+        .cache_hit(cache_hit),
         .mm_cu(mm_cu)
     );
 
@@ -124,7 +126,10 @@ module risc (
         .is(if_is),
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
-        // .not_ok(not_ok),
+
+        .rom_rn   (rom_rn),
+        .cache_hit(cache_hit),
+
         .inv(ex_if_inv),
         .rec(ex_if_rec),
         .stl(stl_mm)
@@ -232,6 +237,8 @@ module risc (
         .mm_mct_ok(mm_ok),
         .mm_mct_e(mm_e),
         .mm_mct_cu(mm_cu),
+
+        .rom_rn    (rom_rn),
 
         .stl(stl_mm)
     );

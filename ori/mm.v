@@ -21,12 +21,14 @@ module mm (
     output  reg         mm_mct_e,
     output  reg[1:0]    mm_mct_cu,
 
+    input   wire[7:0]   rom_rn,
+
     output  reg         stl
 );
 
     reg[2:0]    cu;
 
-    always @ (*) begin
+    always @ (rst, we, wa, wn, mm_mct_ok) begin
         if (rst == 1'b1) begin
             we_o = 1'b0;
             wa_o = 5'h0;
@@ -48,14 +50,14 @@ module mm (
                             stl      = 1'b0;
                             mm_mct_e = 1'b0;
                             case (mm_mct_cu)
-                                2'h3: wn_o = mm_mct_n_o;
+                                2'h3: wn_o = {rom_rn, mm_mct_n_o[23: 0]};
                                 2'h1: begin
-                                    if (mm_mem_e[0] == 1'b1) wn_o = {16'h0, mm_mct_n_o[15:0]};
-                                    else wn_o = {{17{mm_mct_n_o[15]}}, mm_mct_n_o[14:0]};
+                                    if (mm_mem_e[0] == 1'b1) wn_o = {16'h0, rom_rn, mm_mct_n_o[7:0]};
+                                    else wn_o = {{17{rom_rn[7]}}, rom_rn, mm_mct_n_o[7:0]};
                                 end 
                                 2'h0: begin
-                                    if (mm_mem_e[0] == 1'b1) wn_o = {24'h0, mm_mct_n_o[ 7:0]};
-                                    else wn_o = {{25{mm_mct_n_o[ 7]}}, mm_mct_n_o[ 6:0]};
+                                    if (mm_mem_e[0] == 1'b1) wn_o = {24'h0, rom_rn};
+                                    else wn_o = {{25{rom_rn[ 7]}}, rom_rn};
                                 end 
                             endcase
                         end else begin

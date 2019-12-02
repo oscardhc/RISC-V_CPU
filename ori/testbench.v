@@ -23,12 +23,11 @@ initial begin
   rst=1;
   repeat(4) #1 clk=!clk;
   rst=0; 
-  // repeat(300) #1 begin
+  // repeat(10000) #1 begin
   forever #1 begin
     clk=!clk;
   end
   $finish;
 end
-
 
 endmodule

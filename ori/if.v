@@ -9,6 +9,9 @@ module inf (
     input   wire[31:0]  ex_if_pc,
     input   wire        ex_if_pce,
 
+    input   wire[7:0]   rom_rn,
+    input   wire        cache_hit,
+
     // output  reg         not_ok,
     input   wire        inv,
     output  reg         rec,
@@ -30,8 +33,8 @@ module inf (
     //     end
     // end
 
-    always @ (*) begin
-        // $display(">> [%d] %d %d %d %d | %d", $time, inv, rec, rcd, invalid, ok);
+    always @ (rst, ok, inv) begin
+        // $display(">> [%d] %d %d %d %d | %d %d %d", $time, inv, rec, rcd, invalid, ok, npc, npce);
         if (rst == 1'b1) begin
             pc      = 0;
             is      = 0;
@@ -51,13 +54,16 @@ module inf (
             pc      = pc;
         end else if (rcd == 0 && ok != 1'b0) begin
             if (invalid == 1) begin
-                is      = {dt[31:2], 2'b10};
+                if (cache_hit == 0) is = {rom_rn, dt[23: 2], 2'b10};
+                else is = {dt[31: 2], 2'b10};
                 invalid = 0;
             end else begin
                 // $display("%h %d", pc, $time);
-                is      = dt;
+                if (cache_hit == 0) is = {rom_rn, dt[23: 0]};
+                else is = dt;
             end
             if (npce == 1'b1) begin
+                // $display("[%d] JUMP... %d", $time, npc);
                 pc      = npc;
                 npce    = 1'b0;
             end else begin
