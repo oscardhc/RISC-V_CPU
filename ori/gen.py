@@ -149,4 +149,4 @@ with open(name + '.code', 'r') as fin:
             o = o[::-1]
             # print('32\'h' + str(hex(cc*4))[2:], ': rn_o <= 32\'h' + str(hex(toi(o)))[2:] + ';', file=f)
             for i in range(4):
-                print(o[i*8:i*8+8][::-1], file=f)
+                print(hex(eval('0b'+o[i*8:i*8+8][::-1]))[2:], file=f)
