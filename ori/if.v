@@ -33,14 +33,17 @@ module inf (
     //     end
     // end
 
-    always @ (rst, ok, inv) begin
-        // $display(">> [%d] %d %d %d %d | %d %d %d", $time, inv, rec, rcd, invalid, ok, npc, npce);
+    reg[1:0]    ls_ok;
+
+    always @ (*) begin
+        // $display(">> [%d] %d %d %d %d", $time, inv, rec, rcd, ok);
         if (rst == 1'b1) begin
             pc      = 0;
             is      = 0;
             rec     = 0;
             rcd     = 0;
             invalid = 0;
+            ls_ok   = 0;
         end else if (inv == 1 && rec == 0) begin 
             // $display("%d *** INV... %d %d", $time, ex_if_pce, ex_if_pc);
             rec     = 1;
@@ -53,23 +56,29 @@ module inf (
             rec     = 0;
             pc      = pc;
         end else if (rcd == 0 && ok != 1'b0) begin
-            if (invalid == 1) begin
-                if (cache_hit == 0) is = {rom_rn, dt[23: 2], 2'b10};
-                else is = {dt[31: 2], 2'b10};
-                invalid = 0;
-            end else begin
-                // $display("%h %d", pc, $time);
-                if (cache_hit == 0) is = {rom_rn, dt[23: 0]};
-                else is = dt;
+
+            if (ls_ok != ok) begin
+                if (invalid == 1) begin
+                    if (cache_hit == 0) is = {rom_rn, dt[23: 2], 2'b10};
+                    else is = {dt[31: 2], 2'b10};
+                    invalid = 0;
+                end else begin
+                    if (cache_hit == 0) is = {rom_rn, dt[23: 0]};
+                    else is = dt;
+                end
+                if (npce == 1'b1) begin
+                    // $display("[%d] JUMP... %d", $time, npc);
+                    pc      = npc;
+                    npce    = 1'b0;
+                end else begin
+                    pc      = pc + 4;
+                end
             end
-            if (npce == 1'b1) begin
-                // $display("[%d] JUMP... %d", $time, npc);
-                pc      = npc;
-                npce    = 1'b0;
-            end else begin
-                pc      = pc + 4;
-            end
+
+            ls_ok = ok;
+
         end else begin
+            ls_ok   = ok;
             pc      = pc;
             is      = is;
             rec     = rec;

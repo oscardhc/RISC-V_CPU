@@ -27,8 +27,9 @@ module mm (
 );
 
     reg[2:0]    cu;
+    reg         ls_ok;
 
-    always @ (rst, we, wa, wn, mm_mct_ok) begin
+    always @ (*) begin
         if (rst == 1'b1) begin
             we_o = 1'b0;
             wa_o = 5'h0;
@@ -39,11 +40,13 @@ module mm (
             mm_mct_wr   = 0;
             mm_mct_cu   = 0;
             mm_mct_e    = 0;
+            ls_ok = 0;
         end else begin
             we_o = we;
             wa_o = wa;
             if (mm_mem_e[4] != 1'b0) begin
                 // $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
+                ls_ok       = mm_mct_ok;
                 case (mm_mem_e[1])
                     1'b0: begin
                         if (mm_mct_ok == 1'b1) begin
