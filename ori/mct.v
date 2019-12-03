@@ -51,7 +51,7 @@ module mct (
       cur_mode  <= 0;
       lst_cache <= 0;
     end else begin
-      if ((mm_e != ls_mm_e || if_a != ls_if_a) && (ls_if_a == 1 || if_ok != 0 || mm_ok == 1)) begin
+      if ((mm_e != ls_mm_e || if_a != ls_if_a) && (ls_if_a == 1 || if_ok != 0 || mm_ok == 1) && !(mm_e == 1 && mm_e == ls_mm_e)) begin
         if (mm_e != ls_mm_e) begin
           mm_ok <= 0;
         end
@@ -59,7 +59,6 @@ module mct (
         // end
         ls_mm_e <= mm_e;
         if (mm_e == 1) begin
-          if (ls_mm_e != mm_e) begin
             // $display("MM SET! %d %d %d", $time, ad, mm_a);
             cur_mode  <= 1;
             ad        <= mm_a;
@@ -79,104 +78,6 @@ module mct (
               cu      <= 0;
               es      <= mm_cu;
             end
-          end else begin
-// --------------------------------------------------
-      if (nready == 1 || nready == 2) begin
-        ad <= ad + 1;
-        nready <= nready - 1;
-      end else if (nready == 0) begin
-        ad <= ad + 1;
-        if (wr == 1) begin
-          if (cu == es) begin
-            mm_ok <= 1;
-          end
-          case (cu)
-            2'h0: begin
-              out <= mm_n_i[ 7: 0];
-              cu <= 1;
-            end
-            2'h1: begin
-              out <= mm_n_i[15: 8];
-              cu <= 2;
-            end
-            2'h2: begin
-              out <= mm_n_i[23:16];
-              cu <= 3;
-            end
-            2'h3: begin
-              out <= mm_n_i[31:24];
-              cu <= 0;
-            end
-            default: begin
-              cu <= 0;
-            end
-          endcase
-        end else if (cur_mode == 1) begin
-          if (cu == es) begin
-            done <= 1;
-          end
-          if (done == 1) begin
-            mm_ok <= 1;
-            mm_n_o <= ca;
-            done  <= 0;
-          end
-          case (cu)
-            2'h0: begin
-              ca[ 7: 0] <= in;
-              cu <= 1;
-            end
-            2'h1: begin
-              ca[15: 8] <= in;
-              cu <= 2;
-            end
-            2'h2: begin
-              ca[23:16] <= in;
-              cu <= 3;
-            end
-            2'h3: begin
-              ca[31:24] <= in;
-              cu <= 0;
-            end
-            default: begin
-              cu <= 0;
-            end
-          endcase
-        end else begin
-          if (cu == es) begin
-            done <= 1;
-          end
-          if (done == 1) begin
-            if_ok <= 1;
-            if_n  <= ca;
-            done  <= 0;
-            cache[add[`ICACHE_SIZE + 1 :2]] <= {add[16: `ICACHE_SIZE + 2], 1'h1, ca};
-            if (ca[6:0] == 7'b0000011) lst_cache <= 1;
-          end
-          case (cu)
-            2'h0: begin
-              ca[ 7: 0] <= in;
-              cu <= 1;
-            end
-            2'h1: begin
-              ca[15: 8] <= in;
-              cu <= 2;
-            end
-            2'h2: begin
-              ca[23:16] <= in;
-              cu <= 3;
-            end
-            2'h3: begin
-              ca[31:24] <= in;
-              cu <= 0;
-            end
-            default: begin
-              cu <= 0;
-            end
-          endcase
-        end
-      end
-// --------------------------------------------------
-          end
         end else begin
           // $display("IF SET! %d %d %d", $time, ad, if_a);
           if (lst_cache == 0 && cache[if_a[`ICACHE_SIZE + 1 :2]][47 - `ICACHE_SIZE:32] == {if_a[16: `ICACHE_SIZE + 2], 1'b1}) begin
