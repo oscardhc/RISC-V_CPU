@@ -18,7 +18,6 @@ module if_id(
             id_pc <= if_pc;
             if (mmif_ok != 1'b0) begin
                 id_is <= if_is;
-                // if (if_is[1] != 0) $display("%h", if_is); 
             end else begin
                 id_is <= 32'h0;
             end

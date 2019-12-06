@@ -50,6 +50,9 @@ module id(
             sst = 1'h0;
             wa  = 5'h0;
             we  = 1'h0;
+            imm = 0;
+            outn    = 0;
+            npc = 0;
 
         end else begin
 
@@ -65,7 +68,9 @@ module id(
             // out2 = 0;
             // $display("id %h", is);
 
-            imm = 32'h00000000;
+            imm     = 0;
+            outn    = 0;
+            npc = 0;
 
             case (t)
                 7'b0110111: begin

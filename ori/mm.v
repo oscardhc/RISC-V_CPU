@@ -42,16 +42,26 @@ module mm (
             mm_mct_e    = 0;
             ls_ok = 0;
         end else begin
+
+                            mm_mct_cu   = mm_mem_e[3:2];
+                            mm_mct_a    = wn;
+                            mm_mct_wr   = 1'b0;
+                            mm_mct_n_i  = mm_mem_n;
+
             we_o = we;
             wa_o = wa;
+//            wn_o = wn;
+            stl  = 0;
             if (mm_mem_e[4] != 1'b0) begin
                 // $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
                 ls_ok       = mm_mct_ok;
+                mm_mct_e    = 1'b1;
                 case (mm_mem_e[1])
                     1'b0: begin
                         if (mm_mct_ok == 1'b1) begin
                             stl      = 1'b0;
                             mm_mct_e = 1'b0;
+                            wn_o     = 0;
                             case (mm_mct_cu)
                                 2'h3: wn_o = {rom_rn, mm_mct_n_o[23: 0]};
                                 2'h1: begin
@@ -61,7 +71,7 @@ module mm (
                                 2'h0: begin
                                     if (mm_mem_e[0] == 1'b1) wn_o = {24'h0, rom_rn};
                                     else wn_o = {{25{rom_rn[ 7]}}, rom_rn};
-                                end 
+                                end
                             endcase
                         end else begin
                             mm_mct_cu   = mm_mem_e[3:2];
@@ -71,7 +81,7 @@ module mm (
                             mm_mct_e    = 1'b1;
                         end
                     end
-                    1'b1: begin
+                    default: begin
                         // $display("<><><><><><><><><><> %d %d", mm_mem_n, wn);
                         if (mm_mct_ok == 1'b1) begin
                             stl      = 1'b0;
@@ -84,10 +94,12 @@ module mm (
                             mm_mct_wr   = 1'b1;
                             mm_mct_e    = 1'b1;
                         end
+                        wn_o = 0;
                     end
                 endcase
             end else begin
                 wn_o = wn;
+                mm_mct_e    = 1'b0;
             end
         end
     end

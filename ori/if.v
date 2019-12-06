@@ -24,19 +24,36 @@ module inf (
     reg         npce;
     reg[31:0]   npc;
 
-    // always @ (inv) begin
-    //     if (inv == 1) begin
-    //         rec     = 1;
-    //         invalid = 1;
-    //     end else begin
-    //         rec     = 0;
-    //     end
-    // end
-
     reg[1:0]    ls_ok;
+    
+    reg         _npce;
+    reg[31:0]   _npc;
+    reg[31:0]   _pc;
+    
+    reg[31:0]   _is;
+    
+    reg     _rec;
+    reg     _invalid;
+    /*
+    reg[31:0]   is;
+    always @ (posedge clk) begin
+        if (ok != 0) is_out <= is;
+        else is_out = 0;
+    end
+    */
+    
+    always @ (posedge clk) begin
+        _pc <= pc;
+        _npc <= npc;
+        _npce <= npce;
+        
+        _is <= is;
+        
+        _rec <= rec;
+        _invalid <= invalid;
+    end
 
     always @ (*) begin
-        // $display(">> [%d] %d %d %d %d", $time, inv, rec, rcd, ok);
         if (rst == 1'b1) begin
             pc      = 0;
             is      = 0;
@@ -44,19 +61,33 @@ module inf (
             rcd     = 0;
             invalid = 0;
             ls_ok   = 0;
+            npce    = 0;
+            npc     = 0;
         end else if (inv == 1 && rec == 0) begin 
-            // $display("%d *** INV... %d %d", $time, ex_if_pce, ex_if_pc);
             rec     = 1;
-            pc      = pc;
+            pc      = _pc;
             invalid = 1;
             rcd     = 1;
             npce    = ex_if_pce;
             npc     = ex_if_pc;
+            is      = _is;
         end else if (inv == 0 && rec == 1) begin
             rec     = 0;
-            pc      = pc;
+            invalid = 1;
+            npce    = 1;
+            npc     = ex_if_pc;
+            pc      = _pc;
+            is      = _is;
+            rcd     = 1;
         end else if (rcd == 0 && ok != 1'b0) begin
-
+            npce    = _npce;
+            npc     = _npc;
+            rec     = 0;
+            invalid = _invalid;
+            is = _is;
+            pc = _pc;
+            rcd     = 0;
+//            pc      = _pc;
             if (ls_ok != ok) begin
                 if (invalid == 1) begin
                     if (cache_hit == 0) is = {rom_rn, dt[23: 2], 2'b10};
@@ -67,35 +98,23 @@ module inf (
                     else is = dt;
                 end
                 if (npce == 1'b1) begin
-                    // $display("[%d] JUMP... %d", $time, npc);
                     pc      = npc;
                     npce    = 1'b0;
                 end else begin
                     pc      = pc + 4;
                 end
             end
-
-            ls_ok = ok;
-
         end else begin
-            ls_ok   = ok;
-            pc      = pc;
-            is      = is;
-            rec     = rec;
-            invalid = invalid;
+            npce    = _npce;
+            npc     = _npc;
+            pc      = _pc;
+            is      = _is;
+            rec     = 0;
+            invalid = _invalid;
+            rcd     = 0;
         end
-        rcd     = 0;
+        ls_ok   = ok;
     end
-
-    // always @ (posedge clk) begin
-    //     if (rst == 1'b0) begin
-    //         if (ok == 1'b1) begin
-    //             not_ok <= 0;
-    //         end else if (stl == 0) begin
-    //             not_ok <= 1;
-    //         end
-    //     end
-    // end
     
 endmodule
 

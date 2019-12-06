@@ -29,8 +29,9 @@ module mct (
   reg[31:0] ca;
 
 `define ICACHE_SIZE 7
-  reg[15 - `ICACHE_SIZE + 1 + 31:0] cache[2 ** `ICACHE_SIZE - 1:0];
+  (*ram_style = "registers"*) reg[15 - `ICACHE_SIZE + 1 + 31:0] cache[2 ** `ICACHE_SIZE - 1:0];
   reg       lst_cache;
+  integer   i;
 
   wire[31:0] add;
   assign add = ad - 4;
@@ -51,6 +52,9 @@ module mct (
       cur_mode  <= 0;
       lst_cache <= 0;
       cache_hit <= 0;
+      
+      for (i = 0; i < (2 ** `ICACHE_SIZE); i = i + 1) cache[i] <= 0;
+      
     end else begin
       
         if (cur_mode == 0 && cu == es) begin
