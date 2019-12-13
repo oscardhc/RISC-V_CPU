@@ -7,3 +7,4 @@ LW x1, 32, x0
 LH x2, 32, x0
 LB x3, 32, x0
 JAL x5, -32
+LB x3, 32, x0

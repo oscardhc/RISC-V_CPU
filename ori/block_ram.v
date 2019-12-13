@@ -82,7 +82,7 @@ always @(posedge clk)
       ram[addr_a] <= din_a;
     end
     q_addr_a <= addr_a;
-    // $display("%d (%h %h %h %h %h %h %h %h)", $time, ram[37], ram[36], ram[35], ram[34], ram[33], ram[32], ram[31], ram[30]);
+//    $display("%d (%h %h %h %h %h %h %h %h)", $time, ram[17'h1fff8], ram[17'h1fff9], ram[17'h1fffa], ram[17'h1fffb], ram[17'h1fffc], ram[17'h1fffd], ram[17'h1fffe], ram[17'h1ffff]);
   end
 
 assign dout_a = ram[q_addr_a];
@@ -94,7 +94,7 @@ initial begin
     ram[i] = 0;
   end
   $readmemh("test.data", ram); // add test.data to vivado project or specify a valid file path
-  $display("ram %h %h %h %h", ram[0], ram[1], ram[2], ram[3]);
+//  $display("ram %h %h %h %h", ram[0], ram[1], ram[2], ram[3]);
 end
 
 endmodule

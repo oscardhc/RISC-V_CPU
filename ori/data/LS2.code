@@ -1,5 +1,6 @@
 ORI x1, x0, 233
 LW x2, 0, x0
 SW x2, 30, x0
+SB x2, 36, x0
 SH x2, 34, x0
 ORI x2, x0, 233

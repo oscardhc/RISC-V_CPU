@@ -23,7 +23,7 @@ module risc (
     wire        not_ok;
 
     wire[31:0]  if_mct_rn;
-    wire[1:0]   if_ok;
+    wire        if_ok;
     wire        cache_hit;
 
     wire        mm_e;
@@ -63,9 +63,6 @@ module risc (
     wire        ex_we;
     wire[31:0]  ex_nn;
 
-    wire        ex_if_inv;
-    wire        ex_if_rec;
-
     wire[31:0]  ex_npc;
 
     wire[4:0]   ex_wa_o;
@@ -99,45 +96,75 @@ module risc (
     wire[4:0]   ra2;
     wire        re2;
 
+    wire[31:0]  cc_in_a;
+    wire[31:0]  cc_mct_a;
+    wire[31:0]  cc_ou_d;
+    
+    wire[31:0]  opc;
+    
+    wire        if_almost_ok;
+    wire        ls_load;
+
     mct mct0 (
         .clk(clk), .rst(rst),
-        .if_a(if_pc),
-        .in(rom_rn),
-        .out(rom_wn), 
-        .if_ok(if_ok),
-        .if_n(if_mct_rn),
-        .ad(rom_a),
-        .wr(rom_wr),
-        .mm_wr(mm_wr),
-        .mm_n_i(mm_n_i),
-        .mm_n_o(mm_n_o),
-        .mm_a(mm_a),
-        .mm_ok(mm_ok),
-        .mm_e(mm_e),
-        .cache_hit(cache_hit),
-        .mm_cu(mm_cu)
+        .if_a   (cc_mct_a),
+        .in     (rom_rn),
+        .out    (rom_wn), 
+        .if_ok  (if_ok),
+        .if_n   (if_mct_rn),
+        .ad     (rom_a),
+        .wr     (rom_wr),
+        .mm_wr  (mm_wr),
+        .mm_n_i (mm_n_i),
+        .mm_n_o (mm_n_o),
+        .mm_a   (mm_a),
+        .mm_ok  (mm_ok),
+        .mm_e   (mm_e),
+        .mm_cu  (mm_cu),
+        .if_almost_ok(if_almost_ok),
+        .ca_a   (cc_in_a)
+    );
+    
+    cc cc0 (
+        .clk(clk), .rst(rst),
+        
+        .in_e(if_ok),
+        .in_a(cc_in_a),
+        .in_d(if_mct_rn),
+        
+        .mct_a(cc_mct_a),
+        .ls_load(ls_load),
+        .ou_a(if_pc),
+        .ou_d(cc_ou_d),
+        .ou_hit(cache_hit),
+        
+        .stl(stl_mm)
     );
 
     inf if0 (
         .clk(clk), .rst(rst),
-        .dt(if_mct_rn),
-        .ok(if_ok),
-        .pc(if_pc),
-        .is(if_is),
-        .ex_if_pc (ex_if_pc),
-        .ex_if_pce(ex_if_pce),
+        .dt     (if_mct_rn),
+        .ok     (if_ok),
+        .pc     (if_pc),
+        .is     (if_is),
+        .ex_if_pc   (ex_if_pc),
+        .ex_if_pce  (ex_if_pce),
 
-        .rom_rn   (rom_rn),
-        .cache_hit(cache_hit),
+        .cache_hit  (cache_hit),
+        .cache_in   (cc_ou_d),
 
-        .inv(ex_if_inv),
-        .rec(ex_if_rec),
+        .if_almost_ok(if_almost_ok),
+        .ls_load(ls_load),
+        
+        .ipc(cc_in_a),
+        .opc(opc),
+    
         .stl(stl_mm)
     );
 
     if_id if_id0 (
         .clk(clk), .rst(rst),
-        .if_pc(if_pc),
+        .if_pc(opc),
         .if_is(if_is),
         .id_pc(id_pc),
         .id_is(id_is),
@@ -202,9 +229,6 @@ module risc (
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
 
-        .inv_o(ex_if_inv),
-        .rec_i(ex_if_rec),
-        
         .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)
     );
 
@@ -237,8 +261,6 @@ module risc (
         .mm_mct_ok(mm_ok),
         .mm_mct_e(mm_e),
         .mm_mct_cu(mm_cu),
-
-        .rom_rn    (rom_rn),
 
         .stl(stl_mm)
     );

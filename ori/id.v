@@ -95,15 +95,15 @@ module id(
                     we  = 1'b1;
                     re1 = 1'b0;
                     re2 = 1'b0;
-                    imm = pc;
-                    npc = pc - 32'h4 + {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
+                    imm = pc + 4;
+                    npc = pc + {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
                 end
                 // JALR
                 7'b1100111: begin
                     we  = 1'b1;
                     re1 = 1'b1;
                     re2 = 1'b0;
-                    imm = pc;
+                    imm = pc + 4;
                     npc = {{21{is[31]}}, is[30:20]};
                 end
                 // BRANCH
@@ -111,7 +111,7 @@ module id(
                     we  = 1'b0;
                     re1 = 1'b1;
                     re2 = 1'b1;
-                    npc = pc - 32'h4 + {{20{is[31]}}, is[7], is[30:25], is[11:8], 1'b0};
+                    npc = pc + {{20{is[31]}}, is[7], is[30:25], is[11:8], 1'b0};
                 end
                 7'b0100011: begin
                     we  = 1'b0;
