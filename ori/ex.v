@@ -20,10 +20,7 @@ module ex (
     output  reg         ex_if_pce,
 
     output  reg[4:0]    ex_mem_e,
-    output  reg[31:0]   ex_mem_n,
-
-    output  reg         inv_o,
-    input   wire        rec_i
+    output  reg[31:0]   ex_mem_n
     // e 0/1: enable(0/1) + length(1/4) + wr(r/w)
 );
 
@@ -40,7 +37,6 @@ module ex (
         ex_if_pce   = 1'b1; \
         ex_if_pc    = npc; \
         next_invalid = 1; \
-        inv_o = 1; \
     end
 
     reg[4:0]    _wa_o;
@@ -54,19 +50,6 @@ module ex (
     end
 
     always @ (*) begin
-        // $display("> %d TRIGGER %d %d %d", $time, rec_i, inv_o, ex_if_pce);
-        if (rec_i == 1 && inv_o == 1) begin
-
-            inv_o       = 0;
-            ex_if_pce   = 0;
-            reced       = 1;
-            //res = 32'h0;
-            //ex_mem_e = 4'h0;
-            // wa_o = _wa_o;
-            // we_o = _we_o;
-            next_invalid = 1;
-
-        end else if (reced == 0) begin
 
             res = 32'h0;
             ex_mem_e = 4'h0;
@@ -78,7 +61,11 @@ module ex (
             if (rst == 1'b1) begin
                 res = 0;
                 ex_if_pce = 1'b0;
-                next_invalid = 0;
+                if (t[0] == 0) begin
+                    next_invalid = 0;
+                end else begin
+                    next_invalid = 1;
+                end
             end else if (t != 0) begin
                 res = 0;
                 _res = 0;
@@ -142,7 +129,6 @@ module ex (
                             ex_if_pce   = 1'b1;
                             ex_if_pc    = npc + n1;
                             next_invalid = 1;
-                            inv_o = 1;
                         end
                         7'b1100011: begin
                             res = 0;
@@ -187,16 +173,6 @@ module ex (
                 next_invalid = _next_invalid;
                 _res = 0;
             end
-        end else begin
-            reced = 0;
-            // res = _res;
-            // wa_o = _wa_o;
-            // we_o = _we_o;
-            // _wa_o = wa_o;
-            // _we_o = we_o;
-            next_invalid = 1;
-        end
-        // $display("< %d TRIGGER %d %d %d", $time, rec_i, inv_o, ex_if_pce);
     end
 
 endmodule

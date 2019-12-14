@@ -130,8 +130,8 @@ module risc (
         .rom_rn   (rom_rn),
         .cache_hit(cache_hit),
 
-        .inv(ex_if_inv),
-        .rec(ex_if_rec),
+//        .inv(ex_if_inv),
+//        .rec(ex_if_rec),
         .stl(stl_mm)
     );
 
@@ -202,8 +202,8 @@ module risc (
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
 
-        .inv_o(ex_if_inv),
-        .rec_i(ex_if_rec),
+//        .inv_o(ex_if_inv),
+//        .rec_i(ex_if_rec),
         
         .ex_mem_e(ex_mem_e), .ex_mem_n(ex_mem_n)
     );
