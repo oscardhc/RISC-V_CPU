@@ -11,6 +11,8 @@ module inf (
 
     input   wire[7:0]   rom_rn,
     input   wire        cache_hit,
+    
+    output  reg         if_e,
 
     // output  reg         not_ok,
     input   wire        stl
@@ -32,10 +34,14 @@ module inf (
     
     reg         used;
     
+    reg[31:0]   pc4;
+    reg[31:0]   _pc;
+    reg[31:0]   _is;
+    
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
-            npce    <= 0;
-            npc     <= 0;
+            npce <= 0;
+            npc  <= 0;
         end else if (ex_if_pce == 1) begin
             npce <= 1;
             npc  <= ex_if_pc;
@@ -43,11 +49,17 @@ module inf (
             npce <= 0;
             npc  <= 0;
         end
+        _pc <= pc;
+        _is <= is;
+        pc4 <= pc + 4;
     end
 
     always @ (*) begin
 //        $display("IF TRI %d %h", $time, dt);
-        if (ok != 0) begin
+        if (rst == 1'b1) begin
+            pc = 0;
+            is = 0;
+        end else if (ok != 0) begin
             if (ls_ok != ok) begin
                 ls_ok  = ok;
                 if (npce == 1) begin
@@ -58,13 +70,19 @@ module inf (
                 end else begin
                     if (cache_hit == 0) is = {rom_rn, dt[23: 0]};
                     else is = dt;
-                    pc      = pc + 4;
-                    npce    = 0;
+                    pc      = pc4;
                     used    = 0;
                 end
+                if_e = 1;
+            end else begin
+                pc  = _pc;
+                is  = _is;
             end
         end else begin
+            if_e    = 0;
             ls_ok   = ok;
+            pc      = _pc;
+            is      = _is;
         end
 //        ls_ok  = ok;
     end

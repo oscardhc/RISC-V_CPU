@@ -42,11 +42,11 @@ module ex (
     reg[4:0]    _wa_o;
     reg         _we_o;
 
-    reg         _next_invalid;
+//    reg         _next_invalid;
     reg[31:0]   _res;
 
     always @ (posedge clk) begin
-       _next_invalid <= next_invalid;
+//       _next_invalid <= next_invalid;
     end
 
     always @ (*) begin
@@ -55,8 +55,8 @@ module ex (
             ex_mem_e = 4'h0;
             wa_o = 0;
             we_o = 0;
-            _wa_o = 0;
-            _we_o = 0;
+//            _wa_o = 0;
+//            _we_o = 0;
 
             if (rst == 1'b1) begin
                 res = 0;
@@ -80,9 +80,9 @@ module ex (
                     ex_if_pce = 1'b0;
                     wa_o = wa;
                     we_o = we;
-                    _wa_o = wa;
-                    _we_o = we;
-                    next_invalid = _next_invalid;
+//                    _wa_o = wa;
+//                    _we_o = we;
+//                    next_invalid = _next_invalid;
                     case (t)
                         7'b0110111: begin
                             res = n2;
@@ -170,7 +170,7 @@ module ex (
                     _res = res;
                 end
             end else begin
-                next_invalid = _next_invalid;
+//                next_invalid = _next_invalid;
                 _res = 0;
             end
     end

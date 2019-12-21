@@ -39,7 +39,7 @@ module id_ex (
     
 
     always @ (posedge clk) begin
-        if (rst == 1'b1 || id_t == 7'h0) begin
+        if (rst == 1'b1) begin
             ex_t    <= 7'h0;
             ex_st   <= 3'h0;
             ex_sst  <= 1'h0;

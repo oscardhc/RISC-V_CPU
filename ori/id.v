@@ -133,7 +133,7 @@ module id(
                     endcase
                 end
                 7'b0000011: begin
-                    we  = 1'b1;
+                    we  = 1'b0;
                     re1 = 1'b1;
                     re2 = 1'b0;
                     imm = {{21{is[31]}}, is[30:20]};

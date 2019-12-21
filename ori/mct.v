@@ -15,6 +15,7 @@ module mct (
   output	reg[31:0]	    ad,
   output	reg			      wr,
   output  reg           cache_hit,
+  input     wire        if_e,
   input	  wire[1:0]	    mm_cu
 );
 
@@ -28,7 +29,7 @@ module mct (
 
   reg[31:0] ca;
 
-`define ICACHE_SIZE 7
+`define ICACHE_SIZE 8
   (*ram_style = "registers"*) reg[15 - `ICACHE_SIZE + 1 + 31:0] cache[2 ** `ICACHE_SIZE - 1:0];
   reg       lst_cache;
   integer   i;
@@ -64,7 +65,7 @@ module mct (
           // $display("CACHE %h %h", add, {in, ca[23: 0]});
         end
 
-      if ((mm_e != ls_mm_e || if_a != ls_if_a) && (ls_if_a == 1 || if_ok != 0 || mm_ok == 1) && !(mm_e == 1 && mm_e == ls_mm_e)) begin
+      if ((ls_if_a == 1 || if_ok != 0 || mm_ok == 1) && !(mm_e == 1 && mm_e == ls_mm_e)) begin
 
         if (mm_e != ls_mm_e) begin
           mm_ok <= 0;
@@ -104,42 +105,9 @@ module mct (
             cache_hit <= 0;
             // $display("%d CACHE MISS!! %h", $time, if_a);
             if (cur_mode == 0 && ad == if_a) begin
-// --------------------------------------------------
-      if (nready == 1) begin
-        ad <= ad + 1;
-        nready <= 0;
-        if (wr == 0 && cur_mode == 1 && es == 0) begin
-          mm_ok <= 1;
-        end 
-      end else begin
-        ad <= ad + 1;
-          case (cu)
-            0: begin
-              ca[ 7: 0] <= in;
-              cu <= 1;
-            end
-            1: begin
-              ca[15: 8] <= in;
-              cu <= 2;
-            end
-            2: begin
-              ca[23:16] <= in;
-              if_n  <= {8'h0, in, ca[15: 0]};
-              cu <= 3;
-              if_ok <= 1;
-            end
-            3: begin
-              ca[31:24] <= in;
-              cu <= 0;
-              cache[add[`ICACHE_SIZE + 1 :2]] <= {add[16: `ICACHE_SIZE + 2], 1'h1, in, ca[23: 0]};
-              if (ca[6:0] == 7'b0000011) lst_cache <= 1;
-            end
-            default: begin
-              cu <= 0;
-            end
-          endcase
-      end
-// --------------------------------------------------
+                ad <= ad + 1;
+                ca[ 7: 0] <= in;
+                cu <= 0;
             end else begin
               ad      <= if_a;
               nready  <= 1;
