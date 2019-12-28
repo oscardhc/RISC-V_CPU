@@ -16,13 +16,12 @@ module if_id(
             id_is <= 32'h00000000;
         end else if (stl_mm == 1'b0) begin
             id_pc <= if_pc;
+//            $display("%h %d", if_pc, $time);
             if (mmif_ok != 1'b0) begin
                 id_is <= if_is;
             end else begin
                 id_is <= 32'h0;
             end
-        end else begin
-            // id_is <= 32'h0;
         end
     end
 

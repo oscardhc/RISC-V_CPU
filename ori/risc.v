@@ -100,6 +100,8 @@ module risc (
     wire        re2;
     
     wire        if_e;
+    
+    wire        next_invalid;
 
     mct mct0 (
         .clk(clk), .rst(rst),
@@ -188,6 +190,8 @@ module risc (
 
         .id_npc(id_npc),
         .ex_npc(ex_npc),
+        
+        .next_invalid(next_invalid),
 
         .stl_mm(stl_mm)
     );
@@ -205,6 +209,8 @@ module risc (
 
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
+        
+        .next_invalid(next_invalid),
 
 //        .inv_o(ex_if_inv),
 //        .rec_i(ex_if_rec),

@@ -31,12 +31,13 @@ module id_ex (
 
     input   wire[31:0]  id_npc,
     output  reg[31:0]   ex_npc,
+    
+    input   wire        next_invalid,
 
     input   wire        stl_mm
 );
 
-    reg[1:0]    inv;
-    
+    reg         invalid;
 
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
@@ -48,17 +49,27 @@ module id_ex (
             ex_wa   <= 5'h0;
             ex_we   <= 1'h0;
             ex_npc  <= 0;
+            invalid <= 0;
         end else if (stl_mm != 1'b1) begin
             // $display("[%d] - id %d %d", $time, id_n1, id_n2);
-            ex_t    <= id_t;
-            ex_st   <= id_st;
-            ex_sst  <= id_sst;
-            ex_n1   <= id_n1;
-            ex_n2   <= id_n2;
-            ex_wa   <= id_wa;
-            ex_we   <= id_we;
-            ex_nn   <= id_nn;
-            ex_npc  <= id_npc;
+            if (next_invalid == 0 && invalid == 0) begin
+                ex_t    <= id_t;
+                ex_st   <= id_st;
+                ex_sst  <= id_sst;
+                ex_n1   <= id_n1;
+                ex_n2   <= id_n2;
+                ex_wa   <= id_wa;
+                ex_we   <= id_we;
+                ex_nn   <= id_nn;
+                ex_npc  <= id_npc;
+            end else begin
+                ex_t    <= 0;
+                if (next_invalid == 1) begin
+                    invalid <= 1;
+                end else if (id_t[1:0] == 2'b10) begin
+                    invalid <= 0;
+                end
+            end
         end
     end
 

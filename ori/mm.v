@@ -43,15 +43,12 @@ module mm (
             ls_ok = 0;
         end else begin
 
-                            mm_mct_cu   = mm_mem_e[3:2];
-                            mm_mct_a    = wn;
-                            mm_mct_wr   = 1'b0;
-                            mm_mct_n_i  = mm_mem_n;
-
+            mm_mct_cu   = mm_mem_e[3:2];
+            mm_mct_a    = wn;
+            mm_mct_wr   = 1'b0;
+            mm_mct_n_i  = mm_mem_n;
             
             wa_o = wa;
-//            we_o = we;
-//            wn_o = wn;
             stl  = 0;
             if (mm_mem_e[4] != 1'b0) begin
                 // $display("MM_MEM_E !!!!!!!!!! %b", mm_mem_e);
@@ -63,7 +60,6 @@ module mm (
                         if (mm_mct_ok == 1'b1) begin
                             stl      = 1'b0;
                             mm_mct_e = 1'b0;
-//                            wn_o     = 0;
                             we_o     = 1;
                             case (mm_mct_cu)
                                 2'h3: wn_o = {rom_rn, mm_mct_n_o[23: 0]};
@@ -77,6 +73,7 @@ module mm (
                                 end
                             endcase
                         end else begin
+                            wn_o        = 0;
                             mm_mct_cu   = mm_mem_e[3:2];
                             stl         = 1'b1;
                             mm_mct_a    = wn;

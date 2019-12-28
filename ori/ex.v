@@ -18,20 +18,15 @@ module ex (
 
     output  reg[31:0]   ex_if_pc,
     output  reg         ex_if_pce,
+    
+    output  reg         next_invalid,
 
     output  reg[4:0]    ex_mem_e,
     output  reg[31:0]   ex_mem_n
     // e 0/1: enable(0/1) + length(1/4) + wr(r/w)
 );
 
-    reg     next_invalid;
-    reg     reced;
-
-    // always @ (rec_i) begin
-    //     if (rec_i == 1) begin
-    //         inv_o = 0;
-    //     end
-    // end
+    
 
     `define JUMP begin \
         ex_if_pce   = 1'b1; \
@@ -42,55 +37,45 @@ module ex (
     reg[4:0]    _wa_o;
     reg         _we_o;
 
-//    reg         _next_invalid;
-    reg[31:0]   _res;
-
-    always @ (posedge clk) begin
-//       _next_invalid <= next_invalid;
-    end
-
     always @ (*) begin
-
-            res = 32'h0;
+    
             ex_mem_e = 4'h0;
             wa_o = 0;
             we_o = 0;
-//            _wa_o = 0;
-//            _we_o = 0;
 
             if (rst == 1'b1) begin
-                res = 0;
-                ex_if_pce = 1'b0;
-                if (t[0] == 0) begin
-                    next_invalid = 0;
-                end else begin
-                    next_invalid = 1;
-                end
-            end else if (t != 0) begin
-                res = 0;
-                _res = 0;
-                if (next_invalid > 0) begin
-                    ex_if_pce = 1'b0;
-                    if (t[0] == 0) begin
-                        next_invalid = 0;
-                    end else begin
-                        next_invalid = 1;
-                    end
-                end else begin
-                    ex_if_pce = 1'b0;
-                    wa_o = wa;
-                    we_o = we;
-//                    _wa_o = wa;
-//                    _we_o = we;
-//                    next_invalid = _next_invalid;
+                res         = 0;
+                ex_if_pc    = 0;
+                ex_if_pce   = 0;
+                ex_mem_n    = 0;
+                next_invalid    = 0;
+            end else begin
+                res         = 0;
+                ex_mem_n    = 0;
+//                if (1 == 0) begin
+//                    ex_if_pce   = 0;
+//                    ex_if_pc    = 0;
+//                    if (t[1:0] == 2'b10) begin
+//                        next_invalid = 0;
+//                    end else begin
+//                        next_invalid = 1;
+//                    end
+//                end else begin
+                    wa_o        = wa;
+                    we_o        = we;
+                    ex_if_pc    = 0;
+                    ex_if_pce   = 0;
                     case (t)
                         7'b0110111: begin
+                            next_invalid = 0;
                             res = n2;
                         end
                         7'b0010111: begin
+                            next_invalid = 0;
                             res = n2;
                         end
                         7'b0010011, 7'b0110011: begin
+                            next_invalid = 0;
                             case (st)
                                 3'b000: begin 
                                     case (t)
@@ -105,7 +90,6 @@ module ex (
                                     endcase
                                 end
                                 3'b001: res = (n1 << n2);
-                                // TODO: SIGN!!!
                                 3'b010: res = ($signed(n1) < $signed(n2) ? 32'h1 : 32'h0);
                                 3'b011: res = (n1  < n2  ? 32'h1 : 32'h0);
                                 3'b100: res = n1 ^ n2;
@@ -121,7 +105,6 @@ module ex (
                         end
                         7'b1101111: begin
                             res = n2;
-                            // $display("jump !!!!!! %d", npc);
                             `JUMP
                         end
                         7'b1100111: begin
@@ -139,9 +122,11 @@ module ex (
                                 3'b101: if (!($signed(n1) < $signed(n2))) `JUMP
                                 3'b110: if ( (n1 < n2)) `JUMP
                                 3'b111: if (!(n1 < n2)) `JUMP
+                                default: next_invalid = 0;
                             endcase
                         end
                         7'b0100011: begin
+                            next_invalid = 0;
                             res = n1 + nn;
                             ex_mem_n = n2;
                             case(st)
@@ -152,6 +137,7 @@ module ex (
                             endcase
                         end
                         7'b0000011: begin
+                            next_invalid = 0;
                             res = n1 + n2;
                             ex_mem_n = 32'h0;
                             case(st)
@@ -164,14 +150,11 @@ module ex (
                             endcase
                         end
                         default: begin
+                            next_invalid = 0;
                             res = 32'h0;
                         end
                     endcase
-                    _res = res;
-                end
-            end else begin
-//                next_invalid = _next_invalid;
-                _res = 0;
+//                end
             end
     end
 
