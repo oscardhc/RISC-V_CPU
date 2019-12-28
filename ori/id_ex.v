@@ -63,7 +63,13 @@ module id_ex (
                 ex_nn   <= id_nn;
                 ex_npc  <= id_npc;
             end else begin
-                ex_t    <= 0;
+                ex_t    <= 7'h0;
+                ex_st   <= 3'h0;
+                ex_sst  <= 1'h0;
+                ex_n1   <= 32'h0;
+                ex_n2   <= 32'h0;
+                ex_wa   <= 5'h0;
+                ex_we   <= 1'h0;
                 if (next_invalid == 1) begin
                     invalid <= 1;
                 end else if (id_t[1:0] == 2'b10) begin

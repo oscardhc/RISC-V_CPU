@@ -52,19 +52,11 @@ module ex (
             end else begin
                 res         = 0;
                 ex_mem_n    = 0;
-//                if (1 == 0) begin
-//                    ex_if_pce   = 0;
-//                    ex_if_pc    = 0;
-//                    if (t[1:0] == 2'b10) begin
-//                        next_invalid = 0;
-//                    end else begin
-//                        next_invalid = 1;
-//                    end
-//                end else begin
                     wa_o        = wa;
                     we_o        = we;
                     ex_if_pc    = 0;
                     ex_if_pce   = 0;
+                    next_invalid = 0;
                     case (t)
                         7'b0110111: begin
                             next_invalid = 0;
@@ -154,7 +146,6 @@ module ex (
                             res = 32'h0;
                         end
                     endcase
-//                end
             end
     end
 
