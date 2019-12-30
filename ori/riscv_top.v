@@ -95,7 +95,7 @@ wire [31:0] cpu_dbgreg_dout;
 // );
 
 risc risc0 (
-	.clk(clk), .rst(rst),
+	.clk(clk), ._rst(rst), .rdy(cpu_rdy),
 
 	.rom_rn(cpu_ram_din), .rom_wn(cpu_ram_dout),
 	.rom_a(cpu_ram_a), .rom_wr(cpu_ram_wr)

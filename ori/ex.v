@@ -15,9 +15,12 @@ module ex (
     input   wire[31:0]  nn,
 
     input   wire[31:0]  npc,
+    input   wire[31:0]  opc,
+    input   wire[31:0]  ppc,
 
     output  reg[31:0]   ex_if_pc,
     output  reg         ex_if_pce,
+    output  reg[31:0]   ex_if_opc,
     
     output  reg         next_invalid,
 
@@ -29,9 +32,21 @@ module ex (
     
 
     `define JUMP begin \
-        ex_if_pce   = 1'b1; \
-        ex_if_pc    = npc; \
-        next_invalid = 1; \
+        if (npc != ppc) begin \
+            ex_if_pce   = 1'b1; \
+            ex_if_pc    = npc; \
+            ex_if_opc   = opc; \
+            next_invalid = 1; \
+        end \
+    end
+    
+    `define ANTIJUMP begin \
+        if (opc + 4 != ppc) begin \
+            ex_if_pce   = 1'b1; \
+            ex_if_pc    = opc + 4; \
+            ex_if_opc   = opc; \
+            next_invalid = 1; \
+        end \
     end
 
     reg[4:0]    _wa_o;
@@ -59,15 +74,12 @@ module ex (
                     next_invalid = 0;
                     case (t)
                         7'b0110111: begin
-                            next_invalid = 0;
                             res = n2;
                         end
                         7'b0010111: begin
-                            next_invalid = 0;
                             res = n2;
                         end
                         7'b0010011, 7'b0110011: begin
-                            next_invalid = 0;
                             case (st)
                                 3'b000: begin 
                                     case (t)
@@ -101,24 +113,25 @@ module ex (
                         end
                         7'b1100111: begin
                             res = n2;
-                            ex_if_pce   = 1'b1;
-                            ex_if_pc    = npc + n1;
-                            next_invalid = 1;
+                            if (npc + n1 != ppc) begin
+                                ex_if_pce   = 1'b1;
+                                ex_if_pc    = npc + n1;
+                                ex_if_opc   = opc;
+                                next_invalid = 1;
+                            end
                         end
                         7'b1100011: begin
                             res = 0;
                             case (st)
-                                3'b000: if ( (n1 == n2)) `JUMP
-                                3'b001: if (!(n1 == n2)) `JUMP
-                                3'b100: if ( ($signed(n1) < $signed(n2))) `JUMP
-                                3'b101: if (!($signed(n1) < $signed(n2))) `JUMP
-                                3'b110: if ( (n1 < n2)) `JUMP
-                                3'b111: if (!(n1 < n2)) `JUMP
-                                default: next_invalid = 0;
+                                3'b000: if ( (n1 == n2)) `JUMP else `ANTIJUMP
+                                3'b001: if (!(n1 == n2)) `JUMP else `ANTIJUMP
+                                3'b100: if ( ($signed(n1) < $signed(n2))) `JUMP else `ANTIJUMP
+                                3'b101: if (!($signed(n1) < $signed(n2))) `JUMP else `ANTIJUMP
+                                3'b110: if ( (n1 < n2)) `JUMP else `ANTIJUMP
+                                3'b111: if (!(n1 < n2)) `JUMP else `ANTIJUMP
                             endcase
                         end
                         7'b0100011: begin
-                            next_invalid = 0;
                             res = n1 + nn;
                             ex_mem_n = n2;
                             case(st)
@@ -129,7 +142,6 @@ module ex (
                             endcase
                         end
                         7'b0000011: begin
-                            next_invalid = 0;
                             res = n1 + n2;
                             ex_mem_n = 32'h0;
                             case(st)
@@ -142,7 +154,6 @@ module ex (
                             endcase
                         end
                         default: begin
-                            next_invalid = 0;
                             res = 32'h0;
                         end
                     endcase

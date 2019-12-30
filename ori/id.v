@@ -13,6 +13,9 @@ module id(
     output  reg[6:0]    t,
     output  reg[2:0]    st,
     output  reg         sst,
+    
+    input   wire[31:0]  ppc_i,
+    output  reg[31:0]   ppc_o,
 
     output  reg[31:0]   out1,
     output  reg[31:0]   out2,
@@ -27,6 +30,8 @@ module id(
     input   wire[4:0]   mm_wa,
     input   wire[31:0]  mm_wn,
     input   wire        mm_we,
+    
+    output  reg[31:0]   id_ex_pc,
 
     // output  reg[31:0]   id_if_pc,
     // output  reg         id_if_pce,
@@ -51,8 +56,9 @@ module id(
             wa  = 5'h0;
             we  = 1'h0;
             imm = 0;
-            outn    = 0;
+            outn= 0;
             npc = 0;
+            ppc_o = 0;
 
         end else begin
 
@@ -63,6 +69,9 @@ module id(
             ra1 = is[19:15];
             ra2 = is[24:20];
             wa  = is[11:7];
+            
+            id_ex_pc = pc;
+            ppc_o   = ppc_i;
 
             // out1 = 0;
             // out2 = 0;
@@ -70,7 +79,7 @@ module id(
 
             imm     = 0;
             outn    = 0;
-            npc = 0;
+            npc     = 0;
 
             case (t)
                 7'b0110111: begin
@@ -95,15 +104,15 @@ module id(
                     we  = 1'b1;
                     re1 = 1'b0;
                     re2 = 1'b0;
-                    imm = pc;
-                    npc = pc - 32'h4 + {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
+                    imm = pc + 4;
+                    npc = pc + {{12{is[31]}}, is[19:12], is[20], is[30:21], 1'b0};
                 end
                 // JALR
                 7'b1100111: begin
                     we  = 1'b1;
                     re1 = 1'b1;
                     re2 = 1'b0;
-                    imm = pc;
+                    imm = pc + 4;
                     npc = {{21{is[31]}}, is[30:20]};
                 end
                 // BRANCH
@@ -111,7 +120,7 @@ module id(
                     we  = 1'b0;
                     re1 = 1'b1;
                     re2 = 1'b1;
-                    npc = pc - 32'h4 + {{20{is[31]}}, is[7], is[30:25], is[11:8], 1'b0};
+                    npc = pc + {{20{is[31]}}, is[7], is[30:25], is[11:8], 1'b0};
                 end
                 7'b0100011: begin
                     we  = 1'b0;
@@ -159,9 +168,9 @@ module id(
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
             out1 = 32'h0;
-        end else if (re1 == 1'b1 && ex_wa == ra1 && ex_we == 1'b1) begin
+        end else if (re1 == 1'b1 && ex_wa == ra1 && ex_we == 1'b1 && ex_wa != 0) begin
             out1 = ex_wn;
-        end else if (re1 == 1'b1 && mm_wa == ra1 && mm_we == 1'b1) begin
+        end else if (re1 == 1'b1 && mm_wa == ra1 && mm_we == 1'b1 && mm_wa != 0) begin
             out1 = mm_wn;
         end else if (re1 == 1'b1) begin
             // $display("[%d] RA %d %d", $time, ra1, rn1);
@@ -176,12 +185,12 @@ module id(
     always @ (*) begin
         if (rst == 1'b1 || is == 32'h0) begin
             out2 = 32'h0;
-        end else if (re2 == 1'b1 && ex_wa == ra2 && ex_we == 1'b1) begin
+        end else if (re2 == 1'b1 && ex_wa == ra2 && ex_we == 1'b1 && ex_wa != 0) begin
             out2 = ex_wn;
-        end else if (re2 == 1'b1 && mm_wa == ra2 && mm_we == 1'b1) begin
+        end else if (re2 == 1'b1 && mm_wa == ra2 && mm_we == 1'b1 && mm_wa != 0) begin
             out2 = mm_wn;
         end else if (t == 7'b0010111) begin
-            out2 = pc - 4;
+            out2 = pc;
         end else if (re2 == 1'b1) begin
             out2 = rn2;
         end else if (re2 == 1'b0) begin

@@ -11,6 +11,10 @@ module id_ex (
     input   wire[4:0]   id_wa,
     input   wire        id_we,
     input   wire[31:0]  id_nn,
+    input   wire[31:0]  id_pc,
+    
+    input   wire[31:0]  id_ppc,
+    output  reg[31:0]   ex_ppc,
 
     output  reg[6:0]    ex_t,
     output  reg[2:0]    ex_st,
@@ -21,6 +25,7 @@ module id_ex (
     output  reg[4:0]    ex_wa,
     output  reg         ex_we,
     output  reg[31:0]   ex_nn,
+    output  reg[31:0]   ex_pc,
 
     // input   wire[31:0]  id_if_off_i,
     // input   wire[31:0]  id_if_pc_i,
@@ -49,6 +54,8 @@ module id_ex (
             ex_wa   <= 5'h0;
             ex_we   <= 1'h0;
             ex_npc  <= 0;
+            ex_pc   <= 0;
+            ex_ppc  <= 0;
             invalid <= 0;
         end else if (stl_mm != 1'b1) begin
             // $display("[%d] - id %d %d", $time, id_n1, id_n2);
@@ -62,6 +69,8 @@ module id_ex (
                 ex_we   <= id_we;
                 ex_nn   <= id_nn;
                 ex_npc  <= id_npc;
+                ex_pc   <= id_pc;
+                ex_ppc  <= id_ppc;
             end else begin
                 ex_t    <= 7'h0;
                 ex_st   <= 3'h0;
@@ -70,6 +79,8 @@ module id_ex (
                 ex_n2   <= 32'h0;
                 ex_wa   <= 5'h0;
                 ex_we   <= 1'h0;
+                ex_pc   <= 0;
+                ex_ppc  <= 0;
                 if (next_invalid == 1) begin
                     invalid <= 1;
                 end else if (id_t[1:0] == 2'b10) begin

@@ -16,16 +16,12 @@ module regfile(
 );
 
     reg[31:0]   r[31:0];
+    integer     i;
     
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
-            r[0] <= 32'h0;
-            r[1] <= 32'h0;
-            r[2] <= 32'h0;
-            r[3] <= 32'h0;
-            r[4] <= 32'h0;
-            r[5] <= 32'h0;
-        end else if (we == 1'b1 && wa != 5'b00000) begin
+            for (i = 0; i < 32; i = i + 1) r[i] <= 0;
+        end else if (we == 1'b1 && wa != 0) begin
             r[wa] <= wn;
         end
         r[0] <= 32'h0;
@@ -33,7 +29,7 @@ module regfile(
 
     always @ (*) begin
         if (rst == 1'b0 && re1 == 1'b1) begin
-            if (we == 1 && ra1 == wa) begin
+            if (we == 1 && ra1 == wa && wa != 0) begin
                 // $display("  <%d> LLLLLUCKY %d %d %d", $time, ra1, r[ra1], rn1);
                 rn1 = wn;
             end else begin
@@ -48,7 +44,7 @@ module regfile(
 
     always @ (*) begin
         if (rst == 1'b0 && re2 == 1'b1) begin
-            if (we == 1 && ra2 == wa) begin
+            if (we == 1 && ra2 == wa && wa != 0) begin
                 rn2 = wn;
             end else begin
                 rn2 = r[ra2];

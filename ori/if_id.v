@@ -3,6 +3,10 @@ module if_id(
     input   wire[31:0]  if_is,
     input   wire        rst,
     input   wire        clk,
+    
+    input   wire[31:0]  if_ppc,
+    output  reg[31:0]   id_ppc,
+    
     output  reg[31:0]  id_pc,
     output  reg[31:0]  id_is,
 
@@ -15,7 +19,8 @@ module if_id(
             id_pc <= 32'h00000000;
             id_is <= 32'h00000000;
         end else if (stl_mm == 1'b0) begin
-            id_pc <= if_pc;
+            id_pc   <= if_pc;
+            id_ppc  <= if_ppc;
 //            $display("%h %d", if_pc, $time);
             if (mmif_ok != 1'b0) begin
                 id_is <= if_is;

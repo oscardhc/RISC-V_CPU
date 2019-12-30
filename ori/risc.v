@@ -11,13 +11,17 @@
 // `include "regfile.v"
 
 module risc (
-    input   wire    rst,
+    input   wire    _rst,
     input   wire    clk,
+    input   wire    rdy,
     input   wire[7:0]   rom_rn,
     output  wire[7:0]   rom_wn,
     output  wire[31:0]  rom_a,
     output  wire        rom_wr
 );
+    
+    wire rst;
+    assign rst = _rst | (~rdy);
 
     wire        stl_mm;
     wire        not_ok;
@@ -36,12 +40,18 @@ module risc (
 
     wire[31:0]  if_pc;
     wire[31:0]  if_is;
+    
+    wire[31:0]  if_cpc;
 
     wire[31:0]  id_pc;
     wire[31:0]  id_is;
+    
+    wire[31:0]  id_ex_pc_id;
+    wire[31:0]  id_ex_pc_ex;
 
     wire[31:0]  ex_if_pc;
     wire        ex_if_pce;
+    wire[31:0]  ex_if_opc;
 
     wire[6:0]   id_t;
     wire[2:0]   id_st;
@@ -102,6 +112,10 @@ module risc (
     wire        if_e;
     
     wire        next_invalid;
+    
+    wire[31:0]  id_ppc_i;
+    wire[31:0]  id_ppc_o;
+    wire[31:0]  ex_ppc_i;
 
     mct mct0 (
         .clk(clk), .rst(rst),
@@ -131,6 +145,9 @@ module risc (
         .is(if_is),
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
+        .ex_if_opc(ex_if_opc),
+        
+        .cpc(if_cpc),
 
         .rom_rn   (rom_rn),
         .cache_hit(cache_hit),
@@ -143,10 +160,12 @@ module risc (
 
     if_id if_id0 (
         .clk(clk), .rst(rst),
-        .if_pc(if_pc),
+        .if_pc(if_cpc),
         .if_is(if_is),
         .id_pc(id_pc),
         .id_is(id_is),
+        .if_ppc(if_pc),
+        .id_ppc(id_ppc_i),
         .stl_mm(stl_mm),
         .mmif_ok(if_ok)
     );
@@ -165,6 +184,11 @@ module risc (
         .outn(id_nn),
         .npc(id_npc),
 
+        .id_ex_pc(id_ex_pc_id),
+        
+        .ppc_i(id_ppc_i),
+        .ppc_o(id_ppc_o),
+
         .ex_wa(ex_wa_o), .ex_wn(ex_wn_o), .ex_we(ex_we_o),
         .mm_wa(mm_wa_o), .mm_wn(mm_wn_o), .mm_we(mm_we_o)
     );
@@ -182,14 +206,16 @@ module risc (
         
         .id_t(id_t), .id_st(id_st), .id_sst(id_sst),
         .id_n1(id_n1), .id_n2(id_n2), .id_wa(id_wa), .id_we(id_we),
-        .id_nn(id_nn),
+        .id_nn(id_nn), .id_pc(id_ex_pc_id),
 
         .ex_t(ex_t), .ex_st(ex_st), .ex_sst(ex_sst),
         .ex_n1(ex_n1), .ex_n2(ex_n2), .ex_wa(ex_wa), .ex_we(ex_we),
-        .ex_nn(ex_nn),
+        .ex_nn(ex_nn), .ex_pc(id_ex_pc_ex),
 
         .id_npc(id_npc),
         .ex_npc(ex_npc),
+        .id_ppc(id_ppc_o),
+        .ex_ppc(ex_ppc_i),
         
         .next_invalid(next_invalid),
 
@@ -206,9 +232,12 @@ module risc (
         .nn(ex_nn),
 
         .npc(ex_npc),
+        .opc(id_ex_pc_ex),
+        .ppc(ex_ppc_i),
 
         .ex_if_pc (ex_if_pc),
         .ex_if_pce(ex_if_pce),
+        .ex_if_opc(ex_if_opc),
         
         .next_invalid(next_invalid),
 
