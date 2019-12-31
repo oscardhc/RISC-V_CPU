@@ -62,6 +62,7 @@ module ex (
                 res         = 0;
                 ex_if_pc    = 0;
                 ex_if_pce   = 0;
+                ex_if_opc   = 0;
                 ex_mem_n    = 0;
                 next_invalid    = 0;
             end else begin
@@ -71,6 +72,7 @@ module ex (
                     we_o        = we;
                     ex_if_pc    = 0;
                     ex_if_pce   = 0;
+                    ex_if_opc   = 0;
                     next_invalid = 0;
                     case (t)
                         7'b0110111: begin

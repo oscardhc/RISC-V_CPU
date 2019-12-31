@@ -35,6 +35,8 @@ module inf (
     reg[63:0]   btb[31:0];
     integer     i;
     
+    reg[63:0]   _bp;
+    
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
             npce <= 0;
@@ -53,6 +55,7 @@ module inf (
         _cpc    <= cpc;
         ls_ok   <= ok;
         pc4     <= pc + 4;
+        _bp     <= btb[pc[6:2]];
     end
 
     always @ (*) begin
@@ -73,8 +76,8 @@ module inf (
                 end else begin
                     if (cache_hit == 0) is = {rom_rn, dt[23: 0]};
                     else                is = dt;
-                    if (btb[pc[6:2]][63:32] == _pc) begin
-                        pc     = btb[_pc[6:2]][31:0];
+                    if (_bp[63:32] == _pc) begin
+                        pc     = _bp[31:0];
                     end else begin
                         pc     = pc4;
                     end

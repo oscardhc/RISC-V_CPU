@@ -59,6 +59,7 @@ module id(
             outn= 0;
             npc = 0;
             ppc_o = 0;
+            id_ex_pc = 0;
 
         end else begin
 

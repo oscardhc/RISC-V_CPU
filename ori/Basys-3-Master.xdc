@@ -299,8 +299,7 @@ set_property CONFIG_VOLTAGE 3.3 [current_design]
 set_property CFGBVS VCCO [current_design]
 
 
-connect_debug_port u_ila_0/probe3 [get_nets [list risc0/if0/ex_if_pce]]
-connect_debug_port u_ila_0/probe4 [get_nets [list {risc0/if0/npc[31]_i_1_n_0}]]
+
 
 create_debug_core u_ila_0 ila
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
@@ -314,12 +313,12 @@ set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
 set_property port_width 1 [get_debug_ports u_ila_0/clk]
 connect_debug_port u_ila_0/clk [get_nets [list EXCLK_IBUF_BUFG]]
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 32 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {risc0/if0/pc4[0]} {risc0/if0/pc4[1]} {risc0/if0/pc4[2]} {risc0/if0/pc4[3]} {risc0/if0/pc4[4]} {risc0/if0/pc4[5]} {risc0/if0/pc4[6]} {risc0/if0/pc4[7]} {risc0/if0/pc4[8]} {risc0/if0/pc4[9]} {risc0/if0/pc4[10]} {risc0/if0/pc4[11]} {risc0/if0/pc4[12]} {risc0/if0/pc4[13]} {risc0/if0/pc4[14]} {risc0/if0/pc4[15]} {risc0/if0/pc4[16]} {risc0/if0/pc4[17]} {risc0/if0/pc4[18]} {risc0/if0/pc4[19]} {risc0/if0/pc4[20]} {risc0/if0/pc4[21]} {risc0/if0/pc4[22]} {risc0/if0/pc4[23]} {risc0/if0/pc4[24]} {risc0/if0/pc4[25]} {risc0/if0/pc4[26]} {risc0/if0/pc4[27]} {risc0/if0/pc4[28]} {risc0/if0/pc4[29]} {risc0/if0/pc4[30]} {risc0/if0/pc4[31]}]]
+set_property port_width 2 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {risc0/if0/if_ok[0]} {risc0/if0/if_ok[1]}]]
 create_debug_port u_ila_0 probe
 set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
 set_property port_width 32 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list {risc0/if0/npc[0]} {risc0/if0/npc[1]} {risc0/if0/npc[2]} {risc0/if0/npc[3]} {risc0/if0/npc[4]} {risc0/if0/npc[5]} {risc0/if0/npc[6]} {risc0/if0/npc[7]} {risc0/if0/npc[8]} {risc0/if0/npc[9]} {risc0/if0/npc[10]} {risc0/if0/npc[11]} {risc0/if0/npc[12]} {risc0/if0/npc[13]} {risc0/if0/npc[14]} {risc0/if0/npc[15]} {risc0/if0/npc[16]} {risc0/if0/npc[17]} {risc0/if0/npc[18]} {risc0/if0/npc[19]} {risc0/if0/npc[20]} {risc0/if0/npc[21]} {risc0/if0/npc[22]} {risc0/if0/npc[23]} {risc0/if0/npc[24]} {risc0/if0/npc[25]} {risc0/if0/npc[26]} {risc0/if0/npc[27]} {risc0/if0/npc[28]} {risc0/if0/npc[29]} {risc0/if0/npc[30]} {risc0/if0/npc[31]}]]
+connect_debug_port u_ila_0/probe1 [get_nets [list {risc0/if0/_cpc[0]} {risc0/if0/_cpc[1]} {risc0/if0/_cpc[2]} {risc0/if0/_cpc[3]} {risc0/if0/_cpc[4]} {risc0/if0/_cpc[5]} {risc0/if0/_cpc[6]} {risc0/if0/_cpc[7]} {risc0/if0/_cpc[8]} {risc0/if0/_cpc[9]} {risc0/if0/_cpc[10]} {risc0/if0/_cpc[11]} {risc0/if0/_cpc[12]} {risc0/if0/_cpc[13]} {risc0/if0/_cpc[14]} {risc0/if0/_cpc[15]} {risc0/if0/_cpc[16]} {risc0/if0/_cpc[17]} {risc0/if0/_cpc[18]} {risc0/if0/_cpc[19]} {risc0/if0/_cpc[20]} {risc0/if0/_cpc[21]} {risc0/if0/_cpc[22]} {risc0/if0/_cpc[23]} {risc0/if0/_cpc[24]} {risc0/if0/_cpc[25]} {risc0/if0/_cpc[26]} {risc0/if0/_cpc[27]} {risc0/if0/_cpc[28]} {risc0/if0/_cpc[29]} {risc0/if0/_cpc[30]} {risc0/if0/_cpc[31]}]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
