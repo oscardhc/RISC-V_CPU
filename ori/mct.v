@@ -138,6 +138,10 @@ module mct (
                   mm_ok <= 1;
                   cu <= 0;
                 end
+                1: begin
+                  mm_ok <= 1;
+                  cu <= 0;
+                end
                 default: cu <= 0;
               endcase
             end
@@ -176,12 +180,6 @@ module mct (
               endcase
             end
           endcase
-          // if (cu == es) begin
-          //   mm_ok <= 1;
-          //   cu <= 0;
-          // end else begin
-          //   cu <= cu + 1;
-          // end
           case (cu)
             2'h0: out <= mm_n_i[ 7: 0];
             2'h1: out <= mm_n_i[15: 8];

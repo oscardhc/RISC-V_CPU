@@ -43,6 +43,7 @@ module id_ex (
 );
 
     reg         invalid;
+    integer     cnt;
 
     always @ (posedge clk) begin
         if (rst == 1'b1) begin
@@ -57,6 +58,7 @@ module id_ex (
             ex_pc   <= 0;
             ex_ppc  <= 0;
             invalid <= 0;
+            cnt     <= 0;
         end else if (stl_mm != 1'b1) begin
             // $display("[%d] - id %d %d", $time, id_n1, id_n2);
             if (next_invalid == 0 && invalid == 0) begin
@@ -71,6 +73,7 @@ module id_ex (
                 ex_npc  <= id_npc;
                 ex_pc   <= id_pc;
                 ex_ppc  <= id_ppc;
+                cnt     <= cnt + 1;
             end else begin
                 ex_t    <= 7'h0;
                 ex_st   <= 3'h0;
